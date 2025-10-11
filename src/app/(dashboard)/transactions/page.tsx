@@ -60,7 +60,7 @@ export default function TransactionsPage() {
             <CardDescription>
               A list of all your recent expenses.
             </CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent>
             <TransactionsTable
               transactions={transactions.filter((t) => t.type === "expense")}
