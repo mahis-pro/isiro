@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart, Book, Settings } from "lucide-react";
 
@@ -7,7 +8,9 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={100} height={40} />
-        <Button>Start for Free</Button>
+        <Button asChild>
+          <Link href="/auth/sign-up">Start for Free</Link>
+        </Button>
       </header>
 
       <main className="flex-grow">
@@ -21,8 +24,10 @@ export default function Home() {
             your business with ease.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Button size="lg">
-              Get Started <ArrowRight className="ml-2 h-5 w-5" />
+            <Button size="lg" asChild>
+              <Link href="/auth/sign-up">
+                Get Started <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
           </div>
         </section>
