@@ -22,7 +22,7 @@ export default function Header() {
         href="/dashboard"
         className="flex items-center gap-2 font-semibold"
       >
-        <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={32} height={32} />
+        <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={40} height={40} />
       </Link>
       <div className="flex h-full items-center">
         <DesktopNavigation />
