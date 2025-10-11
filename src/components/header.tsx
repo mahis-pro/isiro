@@ -23,8 +23,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -95,35 +93,33 @@ export default function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
-            <SheetHeader className="p-4 border-b">
-              <SheetTitle>
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2 font-semibold"
-                >
-                  <Image
-                    src="/logo.png"
-                    alt="ÌṢIRÒ Logo"
-                    width={80}
-                    height={32}
-                  />
-                </Link>
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="flex-1 space-y-1 p-4">
+            <div className="p-4 border-b">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 font-semibold"
+              >
+                <Image
+                  src="/logo.png"
+                  alt="ÌṢIRÒ Logo"
+                  width={80}
+                  height={32}
+                />
+              </Link>
+            </div>
+            <nav className="flex-1 space-y-2 p-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
+                    "flex items-center gap-4 rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-muted",
                     pathname === item.href
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "text-muted-foreground"
                   )}
                 >
                   <item.icon className="h-5 w-5" />
-                  {item.label}
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </nav>
