@@ -62,9 +62,9 @@ export default function TransactionsTable({
                 transaction.type === "sale" ? "text-primary" : "text-destructive"
               )}
             >
-              {Math.abs(transaction.amount).toLocaleString("en-US", {
+              {Math.abs(transaction.amount).toLocaleString("en-NG", {
                 style: "currency",
-                currency: "USD",
+                currency: "NGN",
               })}
             </TableCell>
             <TableCell>

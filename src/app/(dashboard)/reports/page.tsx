@@ -53,7 +53,7 @@ export default function ReportsPage() {
                 <h3 className="font-semibold">Revenue</h3>
                 <div className="flex justify-between">
                   <p className="text-muted-foreground">Total Sales</p>
-                  <p>$5,900.00</p>
+                  <p>₦5,900.00</p>
                 </div>
               </div>
               <Separator />
@@ -61,21 +61,21 @@ export default function ReportsPage() {
                 <h3 className="font-semibold">Expenses</h3>
                 <div className="flex justify-between">
                   <p className="text-muted-foreground">Office Supplies</p>
-                  <p>$45.50</p>
+                  <p>₦45.50</p>
                 </div>
                 <div className="flex justify-between">
                   <p className="text-muted-foreground">Software Subscription</p>
-                  <p>$29.99</p>
+                  <p>₦29.99</p>
                 </div>
                  <div className="flex justify-between font-medium">
                   <p>Total Expenses</p>
-                  <p>$75.49</p>
+                  <p>₦75.49</p>
                 </div>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <p>Net Profit</p>
-                <p className="text-primary">$5,824.51</p>
+                <p className="text-primary">₦5,824.51</p>
               </div>
             </CardContent>
           </Card>

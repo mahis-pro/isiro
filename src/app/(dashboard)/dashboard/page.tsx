@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/card";
 import {
   DollarSign,
-  ArrowUp,
-  ArrowDown,
 } from "lucide-react";
 import {
   ChartContainer,
@@ -50,7 +48,7 @@ export default function DashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">₦45,231.89</div>
             <p className="text-xs text-muted-foreground">
               +20.1% from last month
             </p>
@@ -62,7 +60,7 @@ export default function DashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$12,842.50</div>
+            <div className="text-2xl font-bold">₦12,842.50</div>
             <p className="text-xs text-muted-foreground">
               +180.1% from last month
             </p>
@@ -74,7 +72,7 @@ export default function DashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$32,389.39</div>
+            <div className="text-2xl font-bold">₦32,389.39</div>
             <p className="text-xs text-muted-foreground">
               +19% from last month
             </p>
