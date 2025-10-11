@@ -29,6 +29,13 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
@@ -94,25 +101,31 @@ export default function Header() {
               <span className="sr-only">Open menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="sm:max-w-xs">
-            <SheetHeader>
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+          <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
+            <SheetHeader className="p-4 border-b">
+              <SheetTitle>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 font-semibold"
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="ÌṢIRÒ Logo"
+                    width={80}
+                    height={32}
+                  />
+                </Link>
+              </SheetTitle>
             </SheetHeader>
-            <nav className="grid gap-4 text-lg font-medium">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 font-semibold mb-4"
-              >
-                <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={80} height={32} />
-              </Link>
+            <nav className="flex-1 space-y-1 p-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-4 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
+                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
                     pathname === item.href
-                      ? "bg-primary text-primary-foreground"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "text-muted-foreground"
                   )}
                 >
@@ -121,6 +134,19 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
+            <div className="mt-auto border-t p-4">
+              <Card>
+                <CardHeader className="p-3">
+                  <CardTitle>John Doe</CardTitle>
+                  <CardDescription>john.doe@example.com</CardDescription>
+                </CardHeader>
+                <CardContent className="p-3 pt-0">
+                  <Button size="sm" className="w-full">
+                    Logout
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </SheetContent>
         </Sheet>
       </div>
