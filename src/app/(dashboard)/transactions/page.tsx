@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -6,51 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
 import TransactionsTable from "@/components/transactions-table";
-import type { Transaction } from "@/components/transactions-table";
-
-// Mock data for now
-const mockTransactions: Transaction[] = [
-  {
-    id: "txn_1",
-    date: "2024-06-15",
-    description: "Sale of Product A",
-    amount: 150.0,
-    type: "sale",
-  },
-  {
-    id: "txn_2",
-    date: "2024-06-14",
-    description: "Office Supplies",
-    amount: -45.5,
-    type: "expense",
-  },
-  {
-    id: "txn_3",
-    date: "2024-06-14",
-    description: "Client Payment - Project X",
-    amount: 2500.0,
-    type: "sale",
-  },
-  {
-    id: "txn_4",
-    date: "2024-06-13",
-    description: "Software Subscription",
-    amount: -29.99,
-    type: "expense",
-  },
-  {
-    id: "txn_5",
-    date: "2024-06-12",
-    description: "Consulting Fee",
-    amount: 750.0,
-    type: "sale",
-  },
-];
+import { useTransactions } from "@/contexts/transactions-context";
+import { NewTransactionDialog } from "@/components/new-transaction-dialog";
 
 export default function TransactionsPage() {
+  const { transactions } = useTransactions();
+
   return (
     <Tabs defaultValue="all">
       <div className="flex items-center">
@@ -60,12 +24,7 @@ export default function TransactionsPage() {
           <TabsTrigger value="expenses">Expenses</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" className="h-8 gap-1">
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              New Transaction
-            </span>
-          </Button>
+          <NewTransactionDialog />
         </div>
       </div>
       <TabsContent value="all">
@@ -77,7 +36,7 @@ export default function TransactionsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TransactionsTable transactions={mockTransactions} />
+            <TransactionsTable transactions={transactions} />
           </CardContent>
         </Card>
       </TabsContent>
@@ -89,7 +48,7 @@ export default function TransactionsPage() {
           </CardHeader>
           <CardContent>
             <TransactionsTable
-              transactions={mockTransactions.filter((t) => t.type === "sale")}
+              transactions={transactions.filter((t) => t.type === "sale")}
             />
           </CardContent>
         </Card>
@@ -101,10 +60,10 @@ export default function TransactionsPage() {
             <CardDescription>
               A list of all your recent expenses.
             </CardDescription>
-          </CardHeader>
+          </Header>
           <CardContent>
             <TransactionsTable
-              transactions={mockTransactions.filter((t) => t.type === "expense")}
+              transactions={transactions.filter((t) => t.type === "expense")}
             />
           </CardContent>
         </Card>

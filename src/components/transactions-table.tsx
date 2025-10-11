@@ -17,14 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-export type Transaction = {
-  id: string;
-  date: string;
-  description: string;
-  amount: number;
-  type: "sale" | "expense";
-};
+import { Transaction } from "@/contexts/transactions-context";
 
 interface TransactionsTableProps {
   transactions: Transaction[];
