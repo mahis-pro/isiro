@@ -1,8 +1,8 @@
 import React from "react";
 import Header from "@/components/header";
-import Sidebar from "@/components/sidebar";
 import { TransactionsProvider } from "@/contexts/transactions-context";
 import { Toaster } from "@/components/ui/sonner";
+import BottomNavigation from "@/components/bottom-navigation";
 
 export default function DashboardLayout({
   children,
@@ -12,13 +12,11 @@ export default function DashboardLayout({
   return (
     <TransactionsProvider>
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
-        <Sidebar />
-        <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-          <Header />
-          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            {children}
-          </main>
-        </div>
+        <Header />
+        <main className="flex-1 p-4 sm:px-6 sm:py-8 md:gap-8 mb-16 md:mb-0">
+          {children}
+        </main>
+        <BottomNavigation />
         <Toaster />
       </div>
     </TransactionsProvider>
