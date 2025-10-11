@@ -24,6 +24,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,7 @@ export default function Header() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             <div className="p-4 border-b">
               <Link
                 href="/dashboard"
