@@ -29,8 +29,8 @@ export function CashFlowReport() {
         <CardTitle>Cashflow Statement</CardTitle>
         <CardDescription>Money in and out of your business</CardDescription>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="w-full h-[250px]">
+      <CardContent className="flex flex-col md:flex-row gap-8 items-center">
+        <div className="w-full h-[250px] md:w-1/3">
           <ChartContainer config={{}} className="w-full h-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -42,7 +42,8 @@ export function CashFlowReport() {
                   data={chartData}
                   dataKey="value"
                   nameKey="category"
-                  innerRadius={60}
+                  innerRadius={50}
+                  outerRadius={80}
                   strokeWidth={5}
                 >
                   {chartData.map((entry, index) => (
@@ -53,7 +54,7 @@ export function CashFlowReport() {
             </ResponsiveContainer>
           </ChartContainer>
         </div>
-        <div className="space-y-4">
+        <div className="w-full md:w-2/3 space-y-4">
           <div className="space-y-2">
             {cashFlowData.map((item) => (
               <div key={item.category} className="flex justify-between items-center py-2">
