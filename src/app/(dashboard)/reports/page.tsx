@@ -1,109 +1,67 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+"use client";
+
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Share, FileDown } from "lucide-react";
+import { BalanceSheetReport } from "@/components/reports/balance-sheet-report";
+import { ProfitLossReport } from "@/components/reports/profit-loss-report";
+import { CashFlowReport } from "@/components/reports/cash-flow-report";
 
 export default function ReportsPage() {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold font-poppins">Financial Reports</h1>
-        <div className="w-[180px]">
-          <Select defaultValue="this-year">
-            <SelectTrigger>
-              <SelectValue placeholder="Select date range" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="this-month">This Month</SelectItem>
-              <SelectItem value="this-quarter">This Quarter</SelectItem>
-              <SelectItem value="this-year">This Year</SelectItem>
-              <SelectItem value="all-time">All Time</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold font-poppins">Reports</h1>
+          <p className="text-muted-foreground">
+            Financial insights at a glance
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline">
+            <Share className="mr-2 h-4 w-4" />
+            Share
+          </Button>
+          <Button>
+            <FileDown className="mr-2 h-4 w-4" />
+            Export PDF
+          </Button>
         </div>
       </div>
 
       <Tabs defaultValue="pnl">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="pnl">Profit & Loss</TabsTrigger>
-          <TabsTrigger value="balance-sheet">Balance Sheet</TabsTrigger>
-          <TabsTrigger value="cash-flow">Cash Flow</TabsTrigger>
+        <TabsList className="bg-transparent p-0 border-b rounded-none justify-start h-auto">
+          <TabsTrigger
+            value="balance-sheet"
+            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+          >
+            Balance Sheet
+          </TabsTrigger>
+          <TabsTrigger
+            value="pnl"
+            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+          >
+            Profit & Loss
+          </TabsTrigger>
+          <TabsTrigger
+            value="cash-flow"
+            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+          >
+            Cashflow
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pnl">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profit & Loss Statement</CardTitle>
-              <CardDescription>For This Year</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <h3 className="font-semibold">Revenue</h3>
-                <div className="flex justify-between">
-                  <p className="text-muted-foreground">Total Sales</p>
-                  <p>₦5,900.00</p>
-                </div>
-              </div>
-              <Separator />
-              <div className="space-y-2">
-                <h3 className="font-semibold">Expenses</h3>
-                <div className="flex justify-between">
-                  <p className="text-muted-foreground">Office Supplies</p>
-                  <p>₦45.50</p>
-                </div>
-                <div className="flex justify-between">
-                  <p className="text-muted-foreground">Software Subscription</p>
-                  <p>₦29.99</p>
-                </div>
-                 <div className="flex justify-between font-medium">
-                  <p>Total Expenses</p>
-                  <p>₦75.49</p>
-                </div>
-              </div>
-              <Separator />
-              <div className="flex justify-between font-bold text-lg">
-                <p>Net Profit</p>
-                <p className="text-primary">₦5,824.51</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="balance-sheet">
-          <Card>
-            <CardHeader>
-              <CardTitle>Balance Sheet</CardTitle>
-              <CardDescription>As of Today</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center text-muted-foreground py-12">
-              <p>Balance Sheet report coming soon.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="cash-flow">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cash Flow Statement</CardTitle>
-              <CardDescription>For This Year</CardDescription>
-            </CardHeader>
-            <CardContent className="text-center text-muted-foreground py-12">
-              <p>Cash Flow report coming soon.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        <div className="mt-6">
+          <TabsContent value="pnl">
+            <ProfitLossReport />
+          </TabsContent>
+          <TabsContent value="balance-sheet">
+            <BalanceSheetReport />
+          </TabsContent>
+          <TabsContent value="cash-flow">
+            <CashFlowReport />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );

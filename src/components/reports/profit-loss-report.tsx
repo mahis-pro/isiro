@@ -1,0 +1,143 @@
+"use client";
+
+import { useTransactions } from "@/contexts/transactions-context";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip } from "recharts";
+import { useMemo } from "react";
+import { format, getMonth } from "date-fns";
+
+const chartConfig = {
+  revenue: {
+    label: "Revenue",
+    color: "hsl(var(--primary))",
+  },
+  expenses: {
+    label: "Expenses",
+    color: "hsl(var(--destructive))",
+  },
+};
+
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+  }).format(value);
+};
+
+export function ProfitLossReport() {
+  const { transactions } = useTransactions();
+
+  const { chartData, totalRevenue, totalExpenses, netProfit } = useMemo(() => {
+    const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+      month: format(new Date(0, i), "MMM"),
+      revenue: 0,
+      expenses: 0,
+    }));
+
+    let totalRevenue = 0;
+    let totalExpenses = 0;
+
+    transactions.forEach((t) => {
+      const monthIndex = getMonth(new Date(t.date));
+      if (t.type === "sale") {
+        monthlyData[monthIndex].revenue += t.amount;
+        totalRevenue += t.amount;
+      } else {
+        const expenseAmount = Math.abs(t.amount);
+        monthlyData[monthIndex].expenses += expenseAmount;
+        totalExpenses += expenseAmount;
+      }
+    });
+
+    const netProfit = totalRevenue - totalExpenses;
+
+    const currentMonth = getMonth(new Date());
+    const relevantMonths = monthlyData.slice(0, currentMonth + 6); // Show a bit more for mock data
+
+    return { chartData: relevantMonths, totalRevenue, totalExpenses, netProfit };
+  }, [transactions]);
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Profit & Loss Statement</CardTitle>
+          <CardDescription>Revenue and expenses over time</CardDescription>
+        </CardHeader>
+        <CardContent className="pl-2">
+          <ChartContainer config={chartConfig} className="h-[350px] w-full">
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+              />
+              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `₦${Number(value) / 1000}k`} />
+              <Tooltip
+                cursor={{ fill: 'hsl(var(--muted))' }}
+                content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
+              />
+              <Legend />
+              <Bar
+                dataKey="revenue"
+                fill="var(--color-revenue)"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="expenses"
+                fill="var(--color-expenses)"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {formatCurrency(totalRevenue)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-destructive">
+              {formatCurrency(totalExpenses)}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-secondary/10 border-secondary">
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-secondary">
+              {formatCurrency(netProfit)}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
