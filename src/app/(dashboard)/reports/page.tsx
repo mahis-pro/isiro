@@ -30,26 +30,28 @@ export default function ReportsPage() {
       </div>
 
       <Tabs defaultValue="pnl">
-        <TabsList className="bg-transparent p-0 border-b rounded-none justify-start h-auto overflow-x-auto">
-          <TabsTrigger
-            value="balance-sheet"
-            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
-          >
-            Balance Sheet
-          </TabsTrigger>
-          <TabsTrigger
-            value="pnl"
-            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
-          >
-            Profit & Loss
-          </TabsTrigger>
-          <TabsTrigger
-            value="cash-flow"
-            className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
-          >
-            Cashflow
-          </TabsTrigger>
-        </TabsList>
+        <div className="w-full overflow-x-auto">
+          <TabsList className="bg-transparent p-0 border-b rounded-none justify-start h-auto">
+            <TabsTrigger
+              value="balance-sheet"
+              className="whitespace-nowrap rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+            >
+              Balance Sheet
+            </TabsTrigger>
+            <TabsTrigger
+              value="pnl"
+              className="whitespace-nowrap rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+            >
+              Profit & Loss
+            </TabsTrigger>
+            <TabsTrigger
+              value="cash-flow"
+              className="whitespace-nowrap rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"
+            >
+              Cashflow
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <div className="mt-6">
           <TabsContent value="pnl">

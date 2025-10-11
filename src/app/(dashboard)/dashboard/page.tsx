@@ -85,7 +85,7 @@ export default function DashboardPage() {
             <CardTitle>Sales & Expenses Overview</CardTitle>
             <CardDescription>January - June 2024</CardDescription>
           </CardHeader>
-          <CardContent className="pl-2">
+          <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />

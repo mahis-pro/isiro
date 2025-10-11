@@ -76,7 +76,7 @@ export function ProfitLossReport() {
           <CardTitle>Profit & Loss Statement</CardTitle>
           <CardDescription>Revenue and expenses over time</CardDescription>
         </CardHeader>
-        <CardContent className="pl-2">
+        <CardContent>
           <ChartContainer config={chartConfig} className="h-[350px] w-full">
             <BarChart data={chartData}>
               <CartesianGrid vertical={false} />
