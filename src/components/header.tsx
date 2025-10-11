@@ -17,7 +17,7 @@ import DesktopNavigation from "./desktop-navigation";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <header className="sticky top-0 z-30 hidden h-16 items-center gap-4 border-b bg-background px-4 md:flex md:px-6">
       <Link
         href="/dashboard"
         className="flex items-center gap-2 font-semibold"
