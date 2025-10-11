@@ -29,13 +29,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
@@ -134,19 +127,6 @@ export default function Header() {
                 </Link>
               ))}
             </nav>
-            <div className="mt-auto border-t p-4">
-              <Card>
-                <CardHeader className="p-3">
-                  <CardTitle>John Doe</CardTitle>
-                  <CardDescription>john.doe@example.com</CardDescription>
-                </CardHeader>
-                <CardContent className="p-3 pt-0">
-                  <Button size="sm" className="w-full">
-                    Logout
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
           </SheetContent>
         </Sheet>
       </div>
