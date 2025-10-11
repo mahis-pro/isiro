@@ -3,7 +3,15 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  LayoutGrid,
+  Landmark,
+  FileText,
+  Settings,
+  Menu,
+  User,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,30 +20,57 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import DesktopNavigation from "./desktop-navigation";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
+  { href: "/transactions", label: "Transactions", icon: Landmark },
+  { href: "/reports", label: "Reports", icon: FileText },
+  { href: "/settings", label: "Settings", icon: Settings },
+];
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
-    <header className="sticky top-0 z-30 hidden h-16 items-center gap-4 border-b bg-background px-4 md:flex md:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
       <Link
         href="/dashboard"
         className="flex items-center gap-2 font-semibold"
       >
-        <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={40} height={40} />
+        <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={80} height={32} />
       </Link>
-      <div className="flex h-full items-center">
-        <DesktopNavigation />
-      </div>
-      <div className="ml-auto flex items-center gap-4">
+
+      <nav className="hidden md:flex md:items-center md:gap-2 text-sm font-medium">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              "flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
+              pathname === item.href
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "text-muted-foreground"
+            )}
+          >
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+
+      <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="overflow-hidden rounded-full"
-            >
-              <User className="h-5 w-5" />
+            <Button variant="outline" className="rounded-full px-4 py-2">
+              <User className="mr-2 h-4 w-4 hidden sm:inline-block" />
+              John Doe
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -49,6 +84,40 @@ export default function Header() {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="md:hidden">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="sm:max-w-xs">
+            <nav className="grid gap-4 text-lg font-medium">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 font-semibold mb-4"
+              >
+                <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={80} height={32} />
+              </Link>
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-4 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
+                    pathname === item.href
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );
