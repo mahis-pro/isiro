@@ -10,7 +10,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TransactionsTable from "@/components/transactions-table";
 import { useTransactions } from "@/contexts/transactions-context";
-import { NewTransactionDialog } from "@/components/new-transaction-dialog";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
 
 export default function TransactionsPage() {
   const { transactions } = useTransactions();
@@ -24,7 +26,14 @@ export default function TransactionsPage() {
           <TabsTrigger value="expenses">Expenses</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
-          <NewTransactionDialog />
+          <Button size="sm" className="h-8 gap-1" asChild>
+            <Link href="/transactions/new">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                New Transaction
+              </span>
+            </Link>
+          </Button>
         </div>
       </div>
       <TabsContent value="all">

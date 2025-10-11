@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,12 +22,9 @@ import { useTransactions } from "@/contexts/transactions-context";
 import { DatePicker } from "./date-picker";
 import { toast } from "sonner";
 
-interface NewTransactionFormProps {
-  onSuccess: () => void;
-}
-
-export function NewTransactionForm({ onSuccess }: NewTransactionFormProps) {
+export function NewTransactionForm() {
   const { addTransaction } = useTransactions();
+  const router = useRouter();
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
@@ -41,7 +39,7 @@ export function NewTransactionForm({ onSuccess }: NewTransactionFormProps) {
   function onSubmit(values: TransactionFormValues) {
     addTransaction(values);
     toast.success("Transaction added successfully!");
-    onSuccess();
+    router.push("/transactions");
   }
 
   return (

@@ -11,6 +11,7 @@ import {
   Settings,
   Menu,
   User,
+  PlusCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -31,6 +32,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
   { href: "/transactions", label: "Transactions", icon: Landmark },
+  { href: "/transactions/new", label: "New Transaction", icon: PlusCircle },
   { href: "/reports", label: "Reports", icon: FileText },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
