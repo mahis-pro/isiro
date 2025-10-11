@@ -8,7 +8,13 @@ export type Transaction = {
   date: string;
   description: string;
   amount: number;
-  type: "sale" | "expense";
+  type: "income" | "expense";
+  category: string;
+  paymentMethod: string;
+  customer?: string;
+  vendor?: string;
+  tax?: number;
+  notes?: string;
 };
 
 interface TransactionsContextType {
@@ -27,7 +33,9 @@ const mockTransactions: Transaction[] = [
       date: new Date("2024-06-15").toISOString(),
       description: "Sale of Product A",
       amount: 150.0,
-      type: "sale",
+      type: "income",
+      category: "Product Sales",
+      paymentMethod: "Bank Transfer",
     },
     {
       id: "txn_2",
@@ -35,13 +43,17 @@ const mockTransactions: Transaction[] = [
       description: "Office Supplies",
       amount: -45.5,
       type: "expense",
+      category: "Utilities",
+      paymentMethod: "Cash",
     },
     {
       id: "txn_3",
       date: new Date("2024-06-14").toISOString(),
       description: "Client Payment - Project X",
       amount: 2500.0,
-      type: "sale",
+      type: "income",
+      category: "Service Revenue",
+      paymentMethod: "Bank Transfer",
     },
     {
       id: "txn_4",
@@ -49,13 +61,17 @@ const mockTransactions: Transaction[] = [
       description: "Software Subscription",
       amount: -29.99,
       type: "expense",
+      category: "Miscellaneous",
+      paymentMethod: "POS",
     },
     {
       id: "txn_5",
       date: new Date("2024-06-12").toISOString(),
       description: "Consulting Fee",
       amount: 750.0,
-      type: "sale",
+      type: "income",
+      category: "Service Revenue",
+      paymentMethod: "Bank Transfer",
     },
 ];
 

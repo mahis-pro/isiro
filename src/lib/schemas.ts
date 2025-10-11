@@ -1,21 +1,68 @@
 import { z } from "zod";
 
-export const transactionSchema = z.object({
-  type: z.enum(["sale", "expense"], {
-    required_error: "Please select a transaction type.",
-  }),
-  date: z.date({
-    required_error: "A date is required.",
-  }),
-  description: z.string().min(2, {
-    message: "Description must be at least 2 characters.",
-  }),
+const fileSchema = z.any().optional(); // Basic file schema, can be improved
+
+export const incomeSchema = z.object({
   amount: z.coerce
     .number({
       required_error: "Amount is required.",
       invalid_type_error: "Amount must be a number.",
     })
     .positive({ message: "Amount must be a positive number." }),
+  description: z.string().min(2, {
+    message: "Description must be at least 2 characters.",
+  }),
+  category: z.string({ required_error: "Please select a category." }),
+  paymentMethod: z.string({ required_error: "Please select a payment method." }),
+  customer: z.string().optional(),
+  tax: z.coerce.number().optional(),
+  date: z.date({
+    required_error: "A date is required.",
+  }),
+  receipt: fileSchema,
 });
 
-export type TransactionFormValues = z.infer<typeof transactionSchema>;
+export type IncomeFormValues = z.infer<typeof incomeSchema>;
+
+export const expenseSchema = z.object({
+  amount: z.coerce
+    .number({
+      required_error: "Amount is required.",
+      invalid_type_error: "Amount must be a number.",
+    })
+    .positive({ message: "Amount must be a positive number." }),
+  description: z.string().min(2, {
+    message: "Description must be at least 2 characters.",
+  }),
+  category: z.string({ required_error: "Please select a category." }),
+  vendor: z.string().optional(),
+  paymentMethod: z.string({ required_error: "Please select a payment method." }),
+  taxDeducted: z.coerce.number().optional(),
+  date: z.date({
+    required_error: "A date is required.",
+  }),
+  invoice: fileSchema,
+  notes: z.string().optional(),
+});
+
+export type ExpenseFormValues = z.infer<typeof expenseSchema>;
+
+export const loanSchema = z.object({
+  loanAmount: z.coerce
+    .number({
+      required_error: "Loan amount is required.",
+      invalid_type_error: "Amount must be a number.",
+    })
+    .positive({ message: "Amount must be a positive number." }),
+  lenderName: z.string().min(2, { message: "Lender name is required." }),
+  disbursementDate: z.date({ required_error: "Disbursement date is required." }),
+  repaymentStartDate: z.date({ required_error: "Repayment start date is required." }),
+  interestRate: z.coerce.number().positive().optional(),
+  loanDuration: z.string().optional(),
+  repaymentFrequency: z.string().optional(),
+  purpose: z.string().optional(),
+  status: z.enum(["Active", "Closed"]),
+  agreement: fileSchema,
+});
+
+export type LoanFormValues = z.infer<typeof loanSchema>;

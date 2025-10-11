@@ -51,7 +51,7 @@ export function ProfitLossReport() {
 
     transactions.forEach((t) => {
       const monthIndex = getMonth(new Date(t.date));
-      if (t.type === "sale") {
+      if (t.type === "income") {
         monthlyData[monthIndex].revenue += t.amount;
         totalRevenue += t.amount;
       } else {

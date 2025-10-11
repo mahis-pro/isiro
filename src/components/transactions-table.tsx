@@ -32,6 +32,7 @@ export default function TransactionsTable({
         <TableRow>
           <TableHead>Description</TableHead>
           <TableHead>Type</TableHead>
+          <TableHead className="hidden sm:table-cell">Category</TableHead>
           <TableHead className="hidden md:table-cell">Date</TableHead>
           <TableHead className="text-right">Amount</TableHead>
           <TableHead>
@@ -47,19 +48,20 @@ export default function TransactionsTable({
             </TableCell>
             <TableCell>
               <Badge
-                variant={transaction.type === "sale" ? "default" : "destructive"}
+                variant={transaction.type === "income" ? "default" : "destructive"}
                 className="capitalize"
               >
                 {transaction.type}
               </Badge>
             </TableCell>
+            <TableCell className="hidden sm:table-cell">{transaction.category}</TableCell>
             <TableCell className="hidden md:table-cell">
               {new Date(transaction.date).toLocaleDateString()}
             </TableCell>
             <TableCell
               className={cn(
                 "text-right",
-                transaction.type === "sale" ? "text-primary" : "text-destructive"
+                transaction.type === "income" ? "text-primary" : "text-destructive"
               )}
             >
               {Math.abs(transaction.amount).toLocaleString("en-NG", {

@@ -57,7 +57,7 @@ export default function TransactionsPage() {
           </CardHeader>
           <CardContent>
             <TransactionsTable
-              transactions={transactions.filter((t) => t.type === "sale")}
+              transactions={transactions.filter((t) => t.type === "income")}
             />
           </CardContent>
         </Card>
