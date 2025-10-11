@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Pie, PieChart, Cell, Tooltip } from "recharts";
+import { Pie, PieChart, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Separator } from "@/components/ui/separator";
 
 const cashFlowData = [
@@ -32,23 +32,25 @@ export function CashFlowReport() {
       <CardContent className="grid md:grid-cols-2 gap-8 items-center">
         <div className="w-full h-[250px]">
           <ChartContainer config={{}} className="w-full h-full">
-            <PieChart>
-              <Tooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel formatter={(value) => formatCurrency(value as number)} />}
-              />
-              <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="category"
-                innerRadius={60}
-                strokeWidth={5}
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-            </PieChart>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Tooltip
+                  cursor={false}
+                  content={<ChartTooltipContent hideLabel formatter={(value) => formatCurrency(value as number)} />}
+                />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="category"
+                  innerRadius={60}
+                  strokeWidth={5}
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </ChartContainer>
         </div>
         <div className="space-y-4">
