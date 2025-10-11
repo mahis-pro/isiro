@@ -42,7 +42,7 @@ export default function TransactionsTable({
       <TableBody>
         {transactions.map((transaction) => (
           <TableRow key={transaction.id}>
-            <TableCell className="font-medium">
+            <TableCell className="font-medium max-w-[150px] sm:max-w-xs truncate">
               {transaction.description}
             </TableCell>
             <TableCell>

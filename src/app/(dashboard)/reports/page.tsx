@@ -30,7 +30,7 @@ export default function ReportsPage() {
       </div>
 
       <Tabs defaultValue="pnl">
-        <TabsList className="bg-transparent p-0 border-b rounded-none justify-start h-auto">
+        <TabsList className="bg-transparent p-0 border-b rounded-none justify-start h-auto overflow-x-auto">
           <TabsTrigger
             value="balance-sheet"
             className="rounded-none data-[state=active]:shadow-none data-[state=active]:border-b-2 border-primary data-[state=active]:bg-transparent px-4"

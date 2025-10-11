@@ -21,7 +21,7 @@ export function CurrencyStep({ value, onSelect }: CurrencyStepProps) {
       <p className="mt-2 text-muted-foreground">
         Select your primary business currency
       </p>
-      <div className="mt-8 grid grid-cols-4 gap-4">
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {currencies.map((currency) => (
           <SelectionCard
             key={currency.id}

@@ -17,7 +17,7 @@ export default function TransactionsPage() {
 
   return (
     <Tabs defaultValue="all">
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center gap-4">
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="sales">Sales</TabsTrigger>
