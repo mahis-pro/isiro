@@ -9,7 +9,6 @@ import {
   Landmark,
   FileText,
   Settings,
-  Menu,
   User,
   PlusCircle,
 } from "lucide-react";
@@ -21,12 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +33,6 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
@@ -58,7 +50,7 @@ export default function Header() {
             href={item.href}
             className={cn(
               "flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-muted",
-              pathname === item.href
+              pathname.startsWith(item.href) && item.href !== "/dashboard" || pathname === item.href
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "text-muted-foreground"
             )}
@@ -88,50 +80,6 @@ export default function Header() {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="flex flex-col p-0 sm:max-w-xs">
-            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-            <div className="p-4 border-b">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 font-semibold"
-                onClick={() => setIsSheetOpen(false)}
-              >
-                <Image
-                  src="/logo.png"
-                  alt="ÌṢIRÒ Logo"
-                  width={80}
-                  height={32}
-                />
-              </Link>
-            </div>
-            <nav className="flex-1 space-y-2 p-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsSheetOpen(false)}
-                  className={cn(
-                    "flex items-center gap-4 rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-muted",
-                    pathname === item.href
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
       </div>
     </header>
   );

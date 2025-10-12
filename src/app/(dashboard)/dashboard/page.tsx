@@ -1,114 +1,74 @@
 "use client";
 
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { DollarSign } from "lucide-react";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, ResponsiveContainer } from "recharts";
+import { useTransactions } from "@/contexts/transactions-context";
+import { useMemo } from "react";
+import { SummaryCard } from "@/components/dashboard/summary-card";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { CashflowChart } from "@/components/dashboard/cashflow-chart";
+import { RecentTransactions } from "@/components/dashboard/recent-transactions";
+import { Insights } from "@/components/dashboard/insights";
+import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 
-const chartData = [
-  { month: "January", sales: 186, expenses: 80 },
-  { month: "February", sales: 305, expenses: 200 },
-  { month: "March", sales: 237, expenses: 120 },
-  { month: "April", sales: 73, expenses: 190 },
-  { month: "May", sales: 209, expenses: 130 },
-  { month: "June", sales: 214, expenses: 140 },
-];
-
-const chartConfig = {
-  sales: {
-    label: "Sales",
-    color: "hsl(var(--primary))",
-  },
-  expenses: {
-    label: "Expenses",
-    color: "hsl(var(--destructive))",
-  },
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 2,
+  }).format(value);
 };
 
 export default function DashboardPage() {
+  const { transactions } = useTransactions();
+
+  const summary = useMemo(() => {
+    const totalSales = transactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const totalExpenses = transactions
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    const balance = totalSales - totalExpenses;
+
+    return { totalSales, totalExpenses, balance };
+  }, [transactions]);
+
   return (
-    <div className="flex flex-col gap-4 md:gap-8">
-      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₦45,231.89</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₦12,842.50</div>
-            <p className="text-xs text-muted-foreground">
-              +180.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₦32,389.39</div>
-            <p className="text-xs text-muted-foreground">+19% from last month</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-8">
+      {/* 1. Summary Bar */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <SummaryCard
+          title="Total Sales"
+          value={formatCurrency(summary.totalSales)}
+          icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
+          trend="+20.1% from last month"
+        />
+        <SummaryCard
+          title="Total Expenses"
+          value={formatCurrency(summary.totalExpenses)}
+          icon={<TrendingDown className="h-4 w-4 text-muted-foreground" />}
+          trend="+15.3% from last month"
+        />
+        <SummaryCard
+          title="Balance"
+          value={formatCurrency(summary.balance)}
+          icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
+          className={summary.balance >= 0 ? "bg-primary/10 border-primary" : "bg-destructive/10 border-destructive"}
+        />
       </div>
-      <div className="grid gap-4 md:gap-8 lg:grid-cols-1">
-        <Card>
-          <CardHeader>
-            <CardTitle>Sales & Expenses Overview</CardTitle>
-            <CardDescription>January - June 2024</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart accessibilityLayer data={chartData}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dot" />}
-                  />
-                  <Bar dataKey="sales" fill="var(--color-sales)" radius={4} />
-                  <Bar
-                    dataKey="expenses"
-                    fill="var(--color-expenses)"
-                    radius={4}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
+
+      {/* 2. Quick Actions */}
+      <QuickActions />
+
+      {/* 3. Cashflow Snapshot */}
+      <CashflowChart />
+
+      {/* 4. Recent Transactions */}
+      <RecentTransactions />
+
+      {/* 5. Insights */}
+      <Insights />
     </div>
   );
 }

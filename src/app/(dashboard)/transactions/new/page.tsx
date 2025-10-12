@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { IncomeForm } from "@/components/income-form";
 import { ExpenseForm } from "@/components/expense-form";
 import { LoanForm } from "@/components/loan-form";
@@ -15,7 +17,10 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export default function NewTransactionPage() {
+function NewTransactionContent() {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab") || "income";
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-4">
@@ -26,7 +31,7 @@ export default function NewTransactionPage() {
           </Link>
         </Button>
       </div>
-      <Tabs defaultValue="income" className="w-full">
+      <Tabs defaultValue={tab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="income">Income</TabsTrigger>
           <TabsTrigger value="expense">Expense</TabsTrigger>
@@ -73,5 +78,13 @@ export default function NewTransactionPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function NewTransactionPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewTransactionContent />
+    </Suspense>
   );
 }
