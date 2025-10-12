@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart, Book, Settings } from "lucide-react";
+import { Testimonials } from "@/components/landing/testimonials";
 
 export default function Home() {
   return (
@@ -73,6 +74,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <Testimonials />
       </main>
 
       <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-foreground/60">
