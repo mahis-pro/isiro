@@ -17,13 +17,15 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useTransactions } from "@/contexts/transactions-context";
+import { useLoans } from "@/contexts/loans-context";
 import { toast } from "sonner";
-import { IncomeFormValues, ExpenseFormValues } from "@/lib/schemas";
+import { IncomeFormValues, ExpenseFormValues, LoanFormValues } from "@/lib/schemas";
 
 function NewTransactionContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { addTransaction } = useTransactions();
+  const { addLoan } = useLoans();
   const tab = searchParams.get("tab") || "income";
 
   const handleAddIncome = (values: IncomeFormValues) => {
@@ -36,6 +38,12 @@ function NewTransactionContent() {
     addTransaction({ ...values, type: "expense", tax: values.taxDeducted });
     toast.success("Expense recorded successfully!");
     router.push("/transactions");
+  };
+
+  const handleAddLoan = (values: LoanFormValues) => {
+    addLoan(values);
+    toast.success("Loan recorded successfully!");
+    router.push("/transactions?tab=loans");
   };
 
   return (
@@ -89,7 +97,7 @@ function NewTransactionContent() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <LoanForm />
+              <LoanForm onSubmit={handleAddLoan} />
             </CardContent>
           </Card>
         </TabsContent>

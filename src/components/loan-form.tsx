@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,20 +21,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { loanSchema, LoanFormValues } from "@/lib/schemas";
-import { useLoans } from "@/contexts/loans-context";
 import { DatePicker } from "./date-picker";
-import { toast } from "sonner";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const repaymentFrequencies = ["Weekly", "Monthly", "Quarterly"];
 
-export function LoanForm() {
-  const { addLoan } = useLoans();
-  const router = useRouter();
+interface LoanFormProps {
+  initialValues?: Partial<LoanFormValues>;
+  onSubmit: (values: LoanFormValues) => void;
+  submitButtonText?: string;
+}
 
+export function LoanForm({
+  initialValues,
+  onSubmit,
+  submitButtonText = "Save Loan",
+}: LoanFormProps) {
   const form = useForm<LoanFormValues>({
     resolver: zodResolver(loanSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       lenderName: "",
       loanAmount: undefined,
       disbursementDate: new Date(),
@@ -47,12 +51,6 @@ export function LoanForm() {
       status: "Active",
     },
   });
-
-  function onSubmit(values: LoanFormValues) {
-    addLoan(values);
-    toast.success("Loan recorded successfully!");
-    router.push("/transactions");
-  }
 
   return (
     <Form {...form}>
@@ -213,7 +211,7 @@ export function LoanForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">Save Loan</Button>
+        <Button type="submit" className="w-full">{submitButtonText}</Button>
       </form>
     </Form>
   );

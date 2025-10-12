@@ -20,6 +20,8 @@ export type Loan = {
 interface LoansContextType {
   loans: Loan[];
   addLoan: (loan: LoanFormValues) => void;
+  updateLoan: (id: string, loan: LoanFormValues) => void;
+  deleteLoan: (id: string) => void;
 }
 
 const LoansContext = createContext<LoansContextType | undefined>(undefined);
@@ -52,8 +54,22 @@ export function LoansProvider({ children }: { children: ReactNode }) {
     setLoans((prev) => [newLoan, ...prev]);
   };
 
+  const updateLoan = (id: string, loanData: LoanFormValues) => {
+    const updatedLoan: Loan = {
+      ...loanData,
+      id,
+      disbursementDate: loanData.disbursementDate.toISOString(),
+      repaymentStartDate: loanData.repaymentStartDate.toISOString(),
+    };
+    setLoans((prev) => prev.map((l) => (l.id === id ? updatedLoan : l)));
+  };
+
+  const deleteLoan = (id: string) => {
+    setLoans((prev) => prev.filter((l) => l.id !== id));
+  };
+
   return (
-    <LoansContext.Provider value={{ loans, addLoan }}>
+    <LoansContext.Provider value={{ loans, addLoan, updateLoan, deleteLoan }}>
       {children}
     </LoansContext.Provider>
   );
