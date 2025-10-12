@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,20 +21,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { expenseSchema, ExpenseFormValues } from "@/lib/schemas";
-import { useTransactions } from "@/contexts/transactions-context";
 import { DatePicker } from "./date-picker";
-import { toast } from "sonner";
 
 const expenseCategories = ["Utilities", "Raw Materials", "Salaries", "Marketing", "Repairs", "Miscellaneous"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
-export function ExpenseForm() {
-  const { addTransaction } = useTransactions();
-  const router = useRouter();
+interface ExpenseFormProps {
+  initialValues?: Partial<ExpenseFormValues>;
+  onSubmit: (values: ExpenseFormValues) => void;
+  submitButtonText?: string;
+}
 
+export function ExpenseForm({
+  initialValues,
+  onSubmit,
+  submitButtonText = "Save Expense",
+}: ExpenseFormProps) {
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       description: "",
       amount: undefined,
       date: new Date(),
@@ -46,12 +50,6 @@ export function ExpenseForm() {
       notes: "",
     },
   });
-
-  function onSubmit(values: ExpenseFormValues) {
-    addTransaction({ ...values, type: "expense", tax: values.taxDeducted });
-    toast.success("Expense recorded successfully!");
-    router.push("/transactions");
-  }
 
   return (
     <Form {...form}>
@@ -189,7 +187,7 @@ export function ExpenseForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">Save Expense</Button>
+        <Button type="submit" className="w-full">{submitButtonText}</Button>
       </form>
     </Form>
   );

@@ -32,6 +32,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { EditTransactionDialog } from "./edit-transaction-dialog";
 
 interface TransactionsTableProps {
   transactions: Transaction[];
@@ -42,6 +43,8 @@ export default function TransactionsTable({
 }: TransactionsTableProps) {
   const { deleteTransaction } = useTransactions();
   const [transactionToDelete, setTransactionToDelete] =
+    React.useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] =
     React.useState<Transaction | null>(null);
 
   const handleDelete = () => {
@@ -112,7 +115,11 @@ export default function TransactionsTable({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setEditingTransaction(transaction)}
+                    >
+                      Edit
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive"
                       onClick={() => setTransactionToDelete(transaction)}
@@ -150,6 +157,11 @@ export default function TransactionsTable({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <EditTransactionDialog
+        transaction={editingTransaction}
+        onOpenChange={(isOpen) => !isOpen && setEditingTransaction(null)}
+      />
     </>
   );
 }

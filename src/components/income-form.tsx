@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,20 +21,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { incomeSchema, IncomeFormValues } from "@/lib/schemas";
-import { useTransactions } from "@/contexts/transactions-context";
 import { DatePicker } from "./date-picker";
-import { toast } from "sonner";
 
 const incomeCategories = ["Product Sales", "Service Revenue", "Commission", "Others"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
-export function IncomeForm() {
-  const { addTransaction } = useTransactions();
-  const router = useRouter();
+interface IncomeFormProps {
+  initialValues?: Partial<IncomeFormValues>;
+  onSubmit: (values: IncomeFormValues) => void;
+  submitButtonText?: string;
+}
 
+export function IncomeForm({
+  initialValues,
+  onSubmit,
+  submitButtonText = "Save Income",
+}: IncomeFormProps) {
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
-    defaultValues: {
+    defaultValues: initialValues || {
       description: "",
       amount: undefined,
       date: new Date(),
@@ -45,12 +49,6 @@ export function IncomeForm() {
       tax: undefined,
     },
   });
-
-  function onSubmit(values: IncomeFormValues) {
-    addTransaction({ ...values, type: "income" });
-    toast.success("Income recorded successfully!");
-    router.push("/transactions");
-  }
 
   return (
     <Form {...form}>
@@ -175,7 +173,7 @@ export function IncomeForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">Save Income</Button>
+        <Button type="submit" className="w-full">{submitButtonText}</Button>
       </form>
     </Form>
   );
