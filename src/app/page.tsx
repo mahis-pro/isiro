@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart, Book, Settings } from "lucide-react";
 import { Testimonials } from "@/components/landing/testimonials";
 import { ProductShowcase } from "@/components/landing/product-showcase";
+import { Faq } from "@/components/landing/faq";
 
 export default function Home() {
   return (
@@ -79,6 +80,8 @@ export default function Home() {
         </section>
 
         <Testimonials />
+
+        <Faq />
       </main>
 
       <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-foreground/60">
