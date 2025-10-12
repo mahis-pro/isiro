@@ -20,6 +20,7 @@ export type Transaction = {
 interface TransactionsContextType {
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, "id" | "amount" | "date"> & { amount: number, date: Date }) => void;
+  deleteTransaction: (id: string) => void;
 }
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
@@ -90,8 +91,12 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     setTransactions((prev) => [newTransaction, ...prev]);
   };
 
+  const deleteTransaction = (id: string) => {
+    setTransactions((prev) => prev.filter((t) => t.id !== id));
+  };
+
   return (
-    <TransactionsContext.Provider value={{ transactions, addTransaction }}>
+    <TransactionsContext.Provider value={{ transactions, addTransaction, deleteTransaction }}>
       {children}
     </TransactionsContext.Provider>
   );
