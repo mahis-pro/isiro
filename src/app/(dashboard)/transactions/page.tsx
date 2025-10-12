@@ -13,9 +13,18 @@ import { useTransactions } from "@/contexts/transactions-context";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
 
 export default function TransactionsPage() {
   const { transactions } = useTransactions();
+
+  const sales = transactions.filter((t) => t.type === "income");
+  const expenses = transactions.filter((t) => t.type === "expense");
+
+  const emptyStateAction = {
+    label: "Add New Transaction",
+    href: "/transactions/new",
+  };
 
   return (
     <Tabs defaultValue="all">
@@ -45,7 +54,15 @@ export default function TransactionsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TransactionsTable transactions={transactions} />
+            {transactions.length > 0 ? (
+              <TransactionsTable transactions={transactions} />
+            ) : (
+              <EmptyState
+                title="No Transactions Yet"
+                description="Get started by adding your first sale or expense."
+                action={emptyStateAction}
+              />
+            )}
           </CardContent>
         </Card>
       </TabsContent>
@@ -56,9 +73,15 @@ export default function TransactionsPage() {
             <CardDescription>A list of all your recent sales.</CardDescription>
           </CardHeader>
           <CardContent>
-            <TransactionsTable
-              transactions={transactions.filter((t) => t.type === "income")}
-            />
+            {sales.length > 0 ? (
+              <TransactionsTable transactions={sales} />
+            ) : (
+              <EmptyState
+                title="No Sales Recorded"
+                description="Your sales will appear here once you add them."
+                action={emptyStateAction}
+              />
+            )}
           </CardContent>
         </Card>
       </TabsContent>
@@ -71,9 +94,15 @@ export default function TransactionsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <TransactionsTable
-              transactions={transactions.filter((t) => t.type === "expense")}
-            />
+            {expenses.length > 0 ? (
+              <TransactionsTable transactions={expenses} />
+            ) : (
+              <EmptyState
+                title="No Expenses Recorded"
+                description="Your expenses will appear here once you add them."
+                action={emptyStateAction}
+              />
+            )}
           </CardContent>
         </Card>
       </TabsContent>

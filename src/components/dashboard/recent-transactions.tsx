@@ -45,29 +45,36 @@ export function RecentTransactions() {
         <CardDescription>Your last 5 financial activities.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-4">
-          {recentActivity.map(item => (
-            <li key={item.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={cn("rounded-full p-2 bg-muted")}>
-                  {ICONS[item.type]}
+        {recentActivity.length > 0 ? (
+          <ul className="space-y-4">
+            {recentActivity.map(item => (
+              <li key={item.id} className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={cn("rounded-full p-2 bg-muted")}>
+                    {ICONS[item.type]}
+                  </div>
+                  <div>
+                    <p className="font-medium truncate max-w-[150px] sm:max-w-xs">{item.description}</p>
+                    <p className="text-sm text-muted-foreground">{item.date.toLocaleDateString()}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium truncate max-w-[150px] sm:max-w-xs">{item.description}</p>
-                  <p className="text-sm text-muted-foreground">{item.date.toLocaleDateString()}</p>
-                </div>
-              </div>
-              <p className={cn(
-                "font-semibold",
-                item.type === 'income' && "text-primary",
-                item.type === 'expense' && "text-destructive",
-                item.type === 'loan' && "text-secondary"
-              )}>
-                {`₦${Math.abs(item.amount).toLocaleString()}`}
-              </p>
-            </li>
-          ))}
-        </ul>
+                <p className={cn(
+                  "font-semibold",
+                  item.type === 'income' && "text-primary",
+                  item.type === 'expense' && "text-destructive",
+                  item.type === 'loan' && "text-secondary"
+                )}>
+                  {`₦${Math.abs(item.amount).toLocaleString()}`}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center text-muted-foreground py-8">
+            <p>No recent activity to show.</p>
+            <p className="text-sm">Add a transaction to get started!</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
