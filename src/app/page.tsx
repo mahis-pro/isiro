@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BarChart, Book, Settings } from "lucide-react";
 import { Testimonials } from "@/components/landing/testimonials";
+import { ProductShowcase } from "@/components/landing/product-showcase";
 
 export default function Home() {
   return (
@@ -32,6 +33,8 @@ export default function Home() {
             </Button>
           </div>
         </section>
+
+        <ProductShowcase />
 
         <section className="bg-card py-20 sm:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
