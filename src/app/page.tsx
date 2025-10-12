@@ -84,8 +84,17 @@ export default function Home() {
         <Faq />
       </main>
 
-      <footer className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-foreground/60">
-        <p>&copy; {new Date().getFullYear()} ÌṢIRÒ. Part of the KudiGuard ecosystem.</p>
+      <footer className="bg-card py-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Link href="/">
+            <Image src="/logo.png" alt="ÌṢIRÒ Logo" width={100} height={40} />
+          </Link>
+          <p className="text-sm text-muted-foreground text-center sm:text-right">
+            &copy; {new Date().getFullYear()} ÌṢIRÒ. Part of the KudiGuard ecosystem.
+            <br />
+            Simple bookkeeping for small businesses.
+          </p>
+        </div>
       </footer>
     </div>
   );
