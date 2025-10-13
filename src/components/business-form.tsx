@@ -57,7 +57,7 @@ export function BusinessForm() {
     if (profile) {
       form.reset({
         businessName: profile.business_name || "",
-        businessType: profile.business_name || "", // Assuming business_name stores the type for now
+        businessType: profile.business_type || "", // Use new business_type field
         currency: profile.currency || "ngn",
       });
     }
@@ -67,9 +67,8 @@ export function BusinessForm() {
     try {
       await updateProfile({
         business_name: data.businessName,
+        business_type: data.businessType, // Save to new business_type field
         currency: data.currency,
-        // Assuming businessType is stored in business_name for simplicity,
-        // if you need a separate column for businessType, it should be added to the profile table.
       });
       toast.success("Business settings updated successfully!");
     } catch (error) {

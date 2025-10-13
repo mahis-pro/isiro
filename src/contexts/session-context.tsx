@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Session, AuthChangeEvent } from "@supabase/supabase-js"; // Import AuthChangeEvent
+import { Session, AuthChangeEvent } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ export type Profile = {
   business_name: string | null;
   onboarded: boolean;
   currency: string;
+  business_type: string | null; // Added business_type
   updated_at: string | null;
 };
 

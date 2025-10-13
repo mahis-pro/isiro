@@ -18,7 +18,7 @@ export default function OnboardingPage() {
   const { session, profile, updateProfile, isLoading } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState({
-    businessType: profile?.business_name || "", // Use profile data if available
+    businessType: profile?.business_type || "", // Use new business_type field
     currency: profile?.currency || "ngn", // Default currency
   });
 
@@ -45,7 +45,7 @@ export default function OnboardingPage() {
       try {
         await updateProfile({
           onboarded: true,
-          business_name: onboardingData.businessType, // Assuming businessType is stored as business_name for simplicity
+          business_type: onboardingData.businessType, // Save to new business_type field
           currency: onboardingData.currency,
         });
         toast.success("Onboarding complete! Welcome to ÌṢIRÒ.");
