@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SessionContextProvider } from "@/contexts/session-context"; // Import the new context
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -40,7 +41,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SessionContextProvider> {/* Wrap children with SessionContextProvider */}
+            {children}
+          </SessionContextProvider>
         </ThemeProvider>
       </body>
     </html>

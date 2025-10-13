@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSession } from "@/contexts/session-context";
+import { useEffect } from "react";
 
 const profileFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -24,17 +26,36 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm() {
+  const { session, profile, updateProfile, isLoading } = useSession();
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      fullName: "John Doe",
-      email: "john.doe@example.com",
+      fullName: "",
+      email: "",
     },
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    toast.success("Profile updated successfully!");
-    console.log(data);
+  useEffect(() => {
+    if (profile && session) {
+      form.reset({
+        fullName: profile.full_name || "",
+        email: session.user.email || "",
+      });
+    }
+  }, [profile, session, form]);
+
+  async function onSubmit(data: ProfileFormValues) {
+    try {
+      await updateProfile({ full_name: data.fullName });
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update profile.");
+    }
+  }
+
+  if (isLoading) {
+    return <Card><CardContent className="p-6">Loading profile...</CardContent></Card>;
   }
 
   return (
@@ -72,7 +93,7 @@ export function ProfileForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={form.formState.isSubmitting}>Save Changes</Button>
           </form>
         </Form>
       </CardContent>

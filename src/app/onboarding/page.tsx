@@ -8,27 +8,52 @@ import { BusinessTypeStep } from "../../components/onboarding/business-type-step
 import { CurrencyStep } from "../../components/onboarding/currency-step";
 import { AllSetStep } from "../../components/onboarding/all-set-step";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import { useSession } from "@/contexts/session-context";
+import { toast } from "sonner";
 
 const TOTAL_STEPS = 3;
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { session, profile, updateProfile, isLoading } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState({
-    businessType: "",
-    currency: "ngn", // Default currency
+    businessType: profile?.business_name || "", // Use profile data if available
+    currency: profile?.currency || "ngn", // Default currency
   });
+
+  // If profile is loading or not available, we might want to show a loading state
+  if (isLoading) {
+    return <div>Loading onboarding data...</div>;
+  }
+
+  // If user is already onboarded, redirect to dashboard
+  if (profile?.onboarded) {
+    router.push("/dashboard");
+    return null;
+  }
 
   const updateData = (data: Partial<typeof onboardingData>) => {
     setOnboardingData((prev) => ({ ...prev, ...data }));
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep((prev) => prev + 1);
     } else {
       // Finish onboarding
-      router.push("/dashboard");
+      try {
+        await updateProfile({
+          onboarded: true,
+          business_name: onboardingData.businessType, // Assuming businessType is stored as business_name for simplicity
+          currency: onboardingData.currency,
+        });
+        toast.success("Onboarding complete! Welcome to ÌṢIRÒ.");
+        router.push("/dashboard");
+      } catch (error) {
+        console.error("Failed to complete onboarding:", error);
+        toast.error("Failed to complete onboarding. Please try again.");
+      }
     }
   };
 

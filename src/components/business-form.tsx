@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSession } from "@/contexts/session-context";
+import { useEffect } from "react";
 
 const businessFormSchema = z.object({
   businessName: z.string().optional(),
@@ -40,18 +42,43 @@ const currencies = [
 ];
 
 export function BusinessForm() {
+  const { profile, updateProfile, isLoading } = useSession();
+
   const form = useForm<BusinessFormValues>({
     resolver: zodResolver(businessFormSchema),
     defaultValues: {
-      businessName: "My Awesome Business",
-      businessType: "Retail",
+      businessName: "",
+      businessType: "",
       currency: "ngn",
     },
   });
 
-  function onSubmit(data: BusinessFormValues) {
-    toast.success("Business settings updated successfully!");
-    console.log(data);
+  useEffect(() => {
+    if (profile) {
+      form.reset({
+        businessName: profile.business_name || "",
+        businessType: profile.business_name || "", // Assuming business_name stores the type for now
+        currency: profile.currency || "ngn",
+      });
+    }
+  }, [profile, form]);
+
+  async function onSubmit(data: BusinessFormValues) {
+    try {
+      await updateProfile({
+        business_name: data.businessName,
+        currency: data.currency,
+        // Assuming businessType is stored in business_name for simplicity,
+        // if you need a separate column for businessType, it should be added to the profile table.
+      });
+      toast.success("Business settings updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update business settings.");
+    }
+  }
+
+  if (isLoading) {
+    return <Card><CardContent className="p-6">Loading business settings...</CardContent></Card>;
   }
 
   return (
@@ -120,7 +147,7 @@ export function BusinessForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={form.formState.isSubmitting}>Save Changes</Button>
           </form>
         </Form>
       </CardContent>

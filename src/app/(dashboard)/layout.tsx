@@ -1,15 +1,38 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import Header from "@/components/header";
 import { TransactionsProvider } from "@/contexts/transactions-context";
 import { LoansProvider } from "@/contexts/loans-context";
 import { Toaster } from "@/components/ui/sonner";
 import { BottomNav } from "@/components/bottom-nav";
+import { useSession } from "@/contexts/session-context";
+import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { session, profile, isLoading } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !session) {
+      router.push("/auth/sign-in");
+    } else if (!isLoading && session && profile && !profile.onboarded) {
+      router.push("/onboarding");
+    }
+  }, [isLoading, session, profile, router]);
+
+  if (isLoading || !session || (session && profile && !profile.onboarded)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading dashboard...
+      </div>
+    );
+  }
+
   return (
     <TransactionsProvider>
       <LoansProvider>

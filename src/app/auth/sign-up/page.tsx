@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -7,11 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { supabase } from "@/integrations/supabase/client";
+import { useTheme } from "next-themes";
 
 export default function SignUpPage() {
+  const { theme } = useTheme();
+
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="text-center lg:hidden">
@@ -33,41 +38,34 @@ export default function SignUpPage() {
           <CardDescription>Enter your details to get started.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <Button variant="outline" className="w-full">
-              Sign up with Google
-            </Button>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">
-                  Or continue with email
-                </span>
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="full-name">Full Name</Label>
-              <Input id="full-name" placeholder="John Doe" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="business-name">Business Name (Optional)</Label>
-              <Input id="business-name" placeholder="My Awesome Business" />
-            </div>
-            <Button type="submit" className="w-full">
-              Create an account
-            </Button>
-          </div>
+          <Auth
+            supabaseClient={supabase}
+            providers={["google"]}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: "hsl(var(--primary))",
+                    brandAccent: "hsl(var(--primary-foreground))",
+                    inputBackground: "hsl(var(--input))",
+                    inputBorder: "hsl(var(--border))",
+                    inputBorderHover: "hsl(var(--ring))",
+                    inputBorderFocus: "hsl(var(--ring))",
+                    inputText: "hsl(var(--foreground))",
+                    inputPlaceholder: "hsl(var(--muted-foreground))",
+                    messageText: "hsl(var(--destructive))",
+                    messageBackground: "hsl(var(--destructive)/0.1)",
+                    anchorTextColor: "hsl(var(--primary))",
+                    anchorTextHoverColor: "hsl(var(--primary)/0.8)",
+                  },
+                },
+              },
+            }}
+            theme={theme === "dark" ? "dark" : "light"}
+            redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
+            magicLink
+          />
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link href="/auth/sign-in" className="underline">

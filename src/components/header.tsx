@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSession } from "@/contexts/session-context"; // Import useSession
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
@@ -33,6 +34,9 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { session, profile, signOut } = useSession(); // Use useSession
+
+  const userFullName = profile?.full_name || session?.user?.email || "My Account";
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
@@ -66,7 +70,7 @@ export default function Header() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="rounded-full px-4 py-2">
               <User className="mr-2 h-4 w-4 hidden sm:inline-block" />
-              John Doe
+              {userFullName}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -77,7 +81,7 @@ export default function Header() {
             </DropdownMenuItem>
             <DropdownMenuItem>Support</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>Logout</DropdownMenuItem> {/* Use signOut from context */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
