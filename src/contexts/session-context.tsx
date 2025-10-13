@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Session } from "@supabase/supabase-js";
+import { Session, AuthChangeEvent } from "@supabase/supabase-js"; // Import AuthChangeEvent
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -56,7 +56,7 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+    } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, currentSession: Session | null) => {
       setSession(currentSession);
       setIsLoading(true);
 
@@ -69,7 +69,7 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
     });
 
     // Initial session check
-    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+    supabase.auth.getSession().then(({ data: { session: initialSession } }: { data: { session: Session | null } }) => {
       setSession(initialSession);
       if (initialSession) {
         fetchProfile(initialSession.user.id).then(() => setIsLoading(false));
