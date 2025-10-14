@@ -69,13 +69,9 @@ export default function SignUpPage() {
             localization={{
               variables: {
                 sign_up: {
-                  have_account_link_text: "", // Hide "Already have an account? Sign in"
+                  // have_account_link_text: "", // Removed due to TypeScript error, custom link is below
                 },
-                providers: {
-                  google: {
-                    button_text: "Sign up with Google", // Change button text for sign-up
-                  },
-                },
+                // Removed 'providers' block as it's not supported directly under 'variables'
               },
             }}
           />

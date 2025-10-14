@@ -69,8 +69,8 @@ export default function SignInPage() {
             localization={{
               variables: {
                 sign_in: {
-                  forgot_password_link_text: "", // Hide "Forgot your password?"
-                  no_account_link_text: "", // Hide "Don't have an account? Sign up"
+                  link_text: "", // Hide "Forgot your password?"
+                  // no_account_link_text: "", // Removed due to TypeScript error, custom link is below
                 },
               },
             }}
