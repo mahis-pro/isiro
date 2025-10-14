@@ -65,6 +65,15 @@ export default function SignInPage() {
             theme={theme === "dark" ? "dark" : "light"}
             redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
             magicLink={false}
+            view="sign_in"
+            localization={{
+              variables: {
+                sign_in: {
+                  forgot_password_link_text: "", // Hide "Forgot your password?"
+                  no_account_link_text: "", // Hide "Don't have an account? Sign up"
+                },
+              },
+            }}
           />
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}

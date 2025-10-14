@@ -65,6 +65,19 @@ export default function SignUpPage() {
             theme={theme === "dark" ? "dark" : "light"}
             redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
             magicLink={false}
+            view="sign_up"
+            localization={{
+              variables: {
+                sign_up: {
+                  have_account_link_text: "", // Hide "Already have an account? Sign in"
+                },
+                providers: {
+                  google: {
+                    button_text: "Sign up with Google", // Change button text for sign-up
+                  },
+                },
+              },
+            }}
           />
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
