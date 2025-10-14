@@ -17,7 +17,7 @@ import { signUpSchema, SignUpFormValues } from "@/lib/schemas";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "./password-input";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/separator"; // Keep import for now, might be used elsewhere
 import { Chrome } from "lucide-react";
 
 export function SignUpForm() {
@@ -107,10 +107,8 @@ export function SignUpForm() {
           Sign Up
         </Button>
       </form>
-      <div className="flex items-center my-6 mx-[-1.5rem] px-6"> {/* Adjusted classes here */}
-        <Separator className="flex-grow" />
+      <div className="flex items-center my-6 justify-center"> {/* Removed mx-[-1.5rem] px-6 and flex-grow from separators */}
         <span className="mx-2 text-sm text-muted-foreground">OR</span>
-        <Separator className="flex-grow" />
       </div>
       <Button
         variant="outline"
