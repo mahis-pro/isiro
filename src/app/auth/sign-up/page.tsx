@@ -33,9 +33,9 @@ export default function SignUpPage() {
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-poppins">
-            Create an Account
+            Sign Up
           </CardTitle>
-          <CardDescription>Enter your details to get started.</CardDescription>
+          <CardDescription>Get started with a new account.</CardDescription>
         </CardHeader>
         <CardContent>
           <Auth

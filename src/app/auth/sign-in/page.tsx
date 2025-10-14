@@ -32,9 +32,9 @@ export default function SignInPage() {
       </div>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-poppins">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-poppins">Sign In</CardTitle>
           <CardDescription>
-            Enter your email to sign in to your account.
+            Access your account.
           </CardDescription>
         </CardHeader>
         <CardContent>
