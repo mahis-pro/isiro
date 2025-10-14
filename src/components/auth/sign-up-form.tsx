@@ -17,7 +17,6 @@ import { signUpSchema, SignUpFormValues } from "@/lib/schemas";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "./password-input";
-import { Separator } from "@/components/ui/separator"; // Keep import for now, might be used elsewhere
 import { Chrome } from "lucide-react";
 
 export function SignUpForm() {
@@ -63,7 +62,7 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mb-6">
         <FormField
           control={form.control}
           name="email"
@@ -107,12 +106,12 @@ export function SignUpForm() {
           Sign Up
         </Button>
       </form>
-      <div className="flex items-center my-6 justify-center"> {/* Removed mx-[-1.5rem] px-6 and flex-grow from separators */}
+      <div className="flex items-center my-6 justify-center">
         <span className="mx-2 text-sm text-muted-foreground">OR</span>
       </div>
       <Button
         variant="outline"
-        className="w-full"
+        className="w-full bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
         onClick={handleGoogleSignIn}
         type="button"
       >
