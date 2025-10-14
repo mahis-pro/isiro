@@ -64,7 +64,7 @@ export default function SignInPage() {
             }}
             theme={theme === "dark" ? "dark" : "light"}
             redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
-            magicLink
+            magicLink={false}
           />
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
