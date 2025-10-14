@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { supabase } from "@/integrations/supabase/client";
 import { useTheme } from "next-themes";
+import { SignInForm } from "@/components/auth/sign-in-form"; // Import the new custom form
 
 export default function SignInPage() {
   const { theme } = useTheme();
@@ -38,42 +36,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Auth
-            supabaseClient={supabase}
-            providers={["google"]}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: "hsl(var(--primary))",
-                    brandAccent: "hsl(var(--primary-foreground))",
-                    inputBackground: "hsl(var(--input))",
-                    inputBorder: "hsl(var(--border))",
-                    inputBorderHover: "hsl(var(--ring))",
-                    inputBorderFocus: "hsl(var(--ring))",
-                    inputText: "hsl(var(--foreground))",
-                    inputPlaceholder: "hsl(var(--muted-foreground))",
-                    messageText: "hsl(var(--destructive))",
-                    messageBackground: "hsl(var(--destructive)/0.1)",
-                    anchorTextColor: "hsl(var(--primary))",
-                    anchorTextHoverColor: "hsl(var(--primary)/0.8)",
-                  },
-                },
-              },
-            }}
-            theme={theme === "dark" ? "dark" : "light"}
-            redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
-            magicLink={false}
-            view="sign_in"
-            localization={{
-              variables: {
-                sign_in: {
-                  // Removed invalid properties
-                },
-              },
-            }}
-          />
+          <SignInForm /> {/* Use the custom SignInForm */}
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/auth/sign-up" className="underline">

@@ -66,3 +66,21 @@ export const loanSchema = z.object({
 });
 
 export type LoanFormValues = z.infer<typeof loanSchema>;
+
+export const signUpSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  confirmPassword: z.string().min(6, { message: "Confirm password must be at least 6 characters." }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match.",
+  path: ["confirmPassword"],
+});
+
+export type SignUpFormValues = z.infer<typeof signUpSchema>;
+
+export const signInSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(1, { message: "Password is required." }),
+});
+
+export type SignInFormValues = z.infer<typeof signInSchema>;
