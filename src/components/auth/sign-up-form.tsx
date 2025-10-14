@@ -107,9 +107,9 @@ export function SignUpForm() {
           Sign Up
         </Button>
       </form>
-      <div className="flex items-center my-6">
+      <div className="flex items-center my-6 w-full"> {/* Added w-full here */}
         <Separator className="flex-grow" />
-        <span className="mx-2 text-sm text-muted-foreground">OR</span> {/* Changed px-4 to mx-2 */}
+        <span className="mx-2 text-sm text-muted-foreground">OR</span>
         <Separator className="flex-grow" />
       </div>
       <Button
