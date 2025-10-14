@@ -109,7 +109,7 @@ export function SignUpForm() {
       </form>
       <div className="flex items-center my-6">
         <Separator className="flex-grow" />
-        <span className="px-4 text-sm text-muted-foreground">OR</span>
+        <span className="mx-2 text-sm text-muted-foreground">OR</span> {/* Changed px-4 to mx-2 */}
         <Separator className="flex-grow" />
       </div>
       <Button
