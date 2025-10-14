@@ -70,12 +70,9 @@ export default function SignUpPage() {
               variables: {
                 sign_up: {
                   // Removed invalid properties
-                  providers: {
-                    google: {
-                      button_text: "Sign up with Google", // Change button text for sign-up
-                    },
-                  },
                 },
+                // The 'providers' object is not a direct child of 'variables' in I18nVariables type.
+                // Removing it to fix the TypeScript error.
               },
             }}
           />
