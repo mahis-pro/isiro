@@ -1,15 +1,13 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createBrowserClient, type CookieOptions } from "@supabase/ssr"; // Changed to createBrowserClient
 import { cookies } from "next/headers";
-import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/cookies"; // Import internal type for explicit casting
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const createClient = () => {
-  // Explicitly cast the result of cookies() to ReadonlyRequestCookies
-  const cookieStore = cookies() as ReadonlyRequestCookies;
+  const cookieStore = cookies(); // Let TypeScript infer the type correctly
 
-  return createServerClient(
+  return createBrowserClient( // Changed to createBrowserClient
     supabaseUrl,
     supabaseKey,
     {
