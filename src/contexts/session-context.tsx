@@ -18,7 +18,7 @@ export type Profile = {
   business_name: string | null;
   onboarded: boolean;
   currency: string;
-  business_type: string | null; // Added business_type
+  business_type: string | null;
   updated_at: string | null;
 };
 
@@ -59,14 +59,14 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, currentSession: Session | null) => {
       setSession(currentSession);
-      setIsLoading(true);
+      setIsLoading(true); 
 
       if (currentSession) {
         await fetchProfile(currentSession.user.id);
       } else {
         setProfile(null);
       }
-      setIsLoading(false);
+      setIsLoading(false); 
     });
 
     // Initial session check
@@ -83,32 +83,33 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      const isAuthPage = pathname.startsWith("/auth");
-      const isOnboardingPage = pathname.startsWith("/onboarding");
+    if (isLoading) return; // Wait until loading is complete
 
-      if (session) {
-        // User is authenticated
-        if (isAuthPage) {
-          // If on an auth page, redirect away
-          if (profile && profile.onboarded) {
-            router.push("/dashboard");
-          } else if (profile && !profile.onboarded) {
-            router.push("/onboarding");
-          } else {
-            // Profile not yet loaded or error, wait or redirect to onboarding
-            router.push("/onboarding");
-          }
-        } else if (!isOnboardingPage && profile && !profile.onboarded) {
-          // Authenticated but not onboarded, redirect to onboarding
+    const isAuthPage = pathname.startsWith("/auth");
+    const isOnboardingPage = pathname.startsWith("/onboarding");
+    const isLandingPage = pathname === "/";
+
+    if (session) {
+      // User is authenticated
+      if (!profile) {
+        // Profile not yet loaded, wait for it. This can happen right after OAuth callback.
+        return; 
+      }
+
+      if (!profile.onboarded) {
+        if (!isOnboardingPage) {
           router.push("/onboarding");
         }
-        // If authenticated, onboarded, and not on auth page, stay on current page (or dashboard if root)
       } else {
-        // User is not authenticated
-        if (!isAuthPage && !pathname.startsWith('/')) { // Allow access to landing page
-          router.push("/auth/sign-in");
+        // User is authenticated and onboarded
+        if (isAuthPage || isLandingPage) {
+          router.push("/dashboard");
         }
+      }
+    } else {
+      // User is not authenticated
+      if (!isAuthPage && !isLandingPage) {
+        router.push("/auth/sign-in");
       }
     }
   }, [session, profile, isLoading, pathname, router]);
