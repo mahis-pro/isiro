@@ -57,7 +57,7 @@ export function BusinessForm() {
     if (profile) {
       form.reset({
         businessName: profile.business_name || "",
-        businessType: profile.business_type || "", // Use new business_type field
+        businessType: profile.business_type || "",
         currency: profile.currency || "ngn",
       });
     }
@@ -67,7 +67,7 @@ export function BusinessForm() {
     try {
       await updateProfile({
         business_name: data.businessName,
-        business_type: data.businessType, // Save to new business_type field
+        business_type: data.businessType,
         currency: data.currency,
       });
       toast.success("Business settings updated successfully!");

@@ -59,14 +59,14 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, currentSession: Session | null) => {
       setSession(currentSession);
-      setIsLoading(true); 
+      setIsLoading(true);
 
       if (currentSession) {
         await fetchProfile(currentSession.user.id);
       } else {
         setProfile(null);
       }
-      setIsLoading(false); 
+      setIsLoading(false);
     });
 
     // Initial session check
@@ -93,7 +93,7 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
       // User is authenticated
       if (!profile) {
         // Profile not yet loaded, wait for it. This can happen right after OAuth callback.
-        return; 
+        return;
       }
 
       if (!profile.onboarded) {
