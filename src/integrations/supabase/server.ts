@@ -1,13 +1,14 @@
-import { createBrowserClient, type CookieOptions } from "@supabase/ssr"; // Changed to createBrowserClient
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const createClient = () => {
-  const cookieStore = cookies(); // Let TypeScript infer the type correctly
+  // Explicitly cast cookies() to 'any' to bypass TypeScript's incorrect Promise inference
+  const cookieStore: any = cookies();
 
-  return createBrowserClient( // Changed to createBrowserClient
+  return createServerClient(
     supabaseUrl,
     supabaseKey,
     {
