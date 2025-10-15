@@ -40,7 +40,7 @@ export function SignInForm() {
       toast.error(error.message);
     } else {
       toast.success("Signed in successfully!");
-      router.push("/dashboard");
+      // Redirection is now handled by SessionContextProvider based on onboarding status
     }
   }
 
