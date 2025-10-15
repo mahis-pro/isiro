@@ -17,8 +17,8 @@ import { signInSchema, SignInFormValues } from "@/lib/schemas";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "./password-input";
-import { Chrome } from "lucide-react";
 import Link from "next/link";
+import { SocialAuthButtons } from "./social-auth-buttons"; // Import the new social buttons
 
 export function SignInForm() {
   const router = useRouter();
@@ -44,30 +44,21 @@ export function SignInForm() {
     }
   }
 
-  async function handleGoogleSignIn() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-    }
-  }
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mb-6">
+      <SocialAuthButtons /> {/* Render social auth buttons here */}
+      <div className="flex items-center my-6 justify-center">
+        <span className="mx-2 text-sm text-muted-foreground">or use your account</span>
+      </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="sr-only">Email</FormLabel>
               <FormControl>
-                <Input placeholder="you@example.com" {...field} />
+                <Input placeholder="Email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,34 +69,23 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="sr-only">Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="••••••••" {...field} />
+                <PasswordInput placeholder="Password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+        <div className="text-right text-sm">
+          <Link href="/auth/forgot-password" className="underline text-muted-foreground hover:text-foreground">
+            Forgot your password?
+          </Link>
+        </div>
         <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
           Sign In
         </Button>
       </form>
-      <div className="mt-4 text-center text-sm">
-        <Link href="/auth/forgot-password" className="underline">
-          Forgot your password?
-        </Link>
-      </div>
-      <div className="flex items-center my-6 justify-center">
-        <span className="mx-2 text-sm text-muted-foreground">OR</span>
-      </div>
-      <Button
-        variant="outline"
-        className="w-full bg-white text-gray-700 border-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-700"
-        onClick={handleGoogleSignIn}
-        type="button"
-      >
-        <Chrome className="mr-2 h-4 w-4" /> Sign in with Google
-      </Button>
     </Form>
   );
 }
