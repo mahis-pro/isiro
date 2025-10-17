@@ -21,8 +21,9 @@ export const config = {
      * - favicon.ico (favicon file)
      * - auth (authentication pages)
      * - onboarding (onboarding pages)
+     * - public-info (hypothetical public page)
      * - any file with an extension (e.g., .svg, .png, .jpg, .jpeg, .gif, .webp)
      */
-    '/((?!_next/static|_next/image|favicon.ico|auth|onboarding|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|auth|onboarding|public-info|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
