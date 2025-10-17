@@ -34,16 +34,14 @@ export function SignUpForm() {
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
-      },
+      // Removed options: { emailRedirectTo: ... } to enable traditional email confirmation
     });
 
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Check your email for a magic link to sign in!");
-      router.push("/auth/check-email");
+      toast.success("Success! Please check your email to confirm your account.");
+      router.push("/auth/sign-in?message=check_email"); // Redirect to sign-in with a message
     }
   }
 

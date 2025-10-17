@@ -11,19 +11,19 @@ export default function CheckEmailPage() {
           <MailCheck className="mx-auto h-12 w-12 text-primary" />
           <CardTitle className="text-2xl font-poppins mt-4">Check Your Email</CardTitle>
           <CardDescription>
-            We've sent a magic link to your email address. Click the link to sign in.
+            We've sent a confirmation link to your email address. Please click the link to verify your account.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
             Didn't receive the email? Check your spam folder or{" "}
-            <Link href="/auth/sign-in" className="underline">
-              try again
+            <Link href="/auth/sign-up" className="underline">
+              try signing up again
             </Link>
             .
           </p>
           <Button asChild variant="link" className="mt-4">
-            <Link href="/">Back to Home</Link>
+            <Link href="/auth/sign-in">Back to Sign In</Link>
           </Button>
         </CardContent>
       </Card>
