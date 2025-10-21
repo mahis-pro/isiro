@@ -4,9 +4,8 @@ import React, { useEffect } from "react";
 import Header from "@/components/header";
 import { TransactionsProvider } from "@/contexts/transactions-context";
 import { LoansProvider } from "@/contexts/loans-context";
-import { Toaster } from "@/components/ui/sonner";
 import { BottomNav } from "@/components/bottom-nav";
-import { useSession } from "@/contexts/session-context"; // Import the new context
+import { useSession } from "@/contexts/session-context";
 import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({
@@ -42,7 +41,6 @@ export default function DashboardLayout({
             {children}
           </main>
           <BottomNav />
-          <Toaster />
         </div>
       </LoansProvider>
     </TransactionsProvider>
