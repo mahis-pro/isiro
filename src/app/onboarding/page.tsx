@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ProgressIndicator } from "../../components/onboarding/progress-indicator";
@@ -18,19 +18,20 @@ export default function OnboardingPage() {
   const { session, profile, updateProfile, isLoading } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState({
-    businessType: profile?.business_type || "", // Use new business_type field
-    currency: profile?.currency || "ngn", // Default currency
+    businessType: profile?.business_type || "",
+    currency: profile?.currency || "ngn",
   });
 
-  // If profile is loading or not available, we might want to show a loading state
-  if (isLoading) {
-    return <div>Loading onboarding data...</div>;
-  }
+  // Handle redirection if already onboarded
+  useEffect(() => {
+    if (!isLoading && profile?.onboarded) {
+      router.push("/dashboard");
+    }
+  }, [isLoading, profile, router]);
 
-  // If user is already onboarded, redirect to dashboard
-  if (profile?.onboarded) {
-    router.push("/dashboard");
-    return null;
+  // If profile is loading or already onboarded, show a loading state or nothing
+  if (isLoading || (profile && profile.onboarded)) {
+    return <div>Loading onboarding data...</div>;
   }
 
   const updateData = (data: Partial<typeof onboardingData>) => {
@@ -45,11 +46,11 @@ export default function OnboardingPage() {
       try {
         await updateProfile({
           onboarded: true,
-          business_type: onboardingData.businessType, // Save to new business_type field
+          business_type: onboardingData.businessType,
           currency: onboardingData.currency,
         });
         toast.success("Onboarding complete! Welcome to ÌṢIRÒ.");
-        router.push("/dashboard");
+        // Redirection will be handled by the useEffect above or SessionContextProvider
       } catch (error) {
         console.error("Failed to complete onboarding:", error);
         toast.error("Failed to complete onboarding. Please try again.");
@@ -100,7 +101,7 @@ export default function OnboardingPage() {
             Back
           </Button>
         ) : (
-          <div /> // Placeholder to keep "Continue" on the right
+          <div />
         )}
 
         <Button onClick={nextStep} disabled={isContinueDisabled()}>
