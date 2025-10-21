@@ -148,12 +148,10 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      toast.error("Failed to update profile.");
       console.error("Error updating profile:", error);
-      throw error;
+      throw error; // Re-throw to be caught by the calling component
     } else if (data) {
       setProfile(data);
-      toast.success("Profile updated successfully!");
     }
   };
 
