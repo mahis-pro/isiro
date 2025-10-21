@@ -3,10 +3,10 @@
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { AuthPageContainer } from "@/components/auth/auth-page-container";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense } from "react"; // Import Suspense
 import { toast } from "sonner";
 
-export default function SignInPage() {
+function SignInContent() {
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
 
@@ -20,5 +20,13 @@ export default function SignInPage() {
       form={<SignInForm />}
       rightPanelImageSrc="/auth-mockup.png"
     />
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading authentication...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 }
