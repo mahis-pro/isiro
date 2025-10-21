@@ -73,15 +73,17 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     }
 
     const newTransactionData = {
-      ...transaction,
       user_id: session.user.id,
       amount: transaction.type === 'expense' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
       date: transaction.date.toISOString(),
-      payment_method: transaction.paymentMethod,
-      customer: transaction.customer || null, // Convert empty string to null
-      vendor: transaction.vendor || null,     // Convert empty string to null
-      tax: transaction.tax === 0 ? null : transaction.tax, // Convert 0 to null for optional tax
-      notes: transaction.notes || null,       // Convert empty string to null
+      description: transaction.description,
+      category: transaction.category,
+      payment_method: transaction.paymentMethod, // Corrected: map camelCase to snake_case
+      customer: transaction.customer || null,
+      vendor: transaction.vendor || null,
+      tax: transaction.tax === 0 ? null : transaction.tax,
+      notes: transaction.notes || null,
+      type: transaction.type,
     };
 
     console.log("Attempting to insert transaction with data:", newTransactionData); // Added debug log
@@ -115,14 +117,16 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     }
 
     const updatedTransactionData = {
-      ...data,
       amount: data.type === 'expense' ? -Math.abs(data.amount) : Math.abs(data.amount),
       date: data.date.toISOString(),
-      payment_method: data.paymentMethod,
-      customer: data.customer || null, // Convert empty string to null
-      vendor: data.vendor || null,     // Convert empty string to null
-      tax: data.tax === 0 ? null : data.tax, // Convert 0 to null for optional tax
-      notes: data.notes || null,       // Convert empty string to null
+      description: data.description,
+      category: data.category,
+      payment_method: data.paymentMethod, // Corrected: map camelCase to snake_case
+      customer: data.customer || null,
+      vendor: data.vendor || null,
+      tax: data.tax === 0 ? null : data.tax,
+      notes: data.notes || null,
+      type: data.type,
     };
 
     console.log("Attempting to update transaction with data:", updatedTransactionData); // Added debug log
