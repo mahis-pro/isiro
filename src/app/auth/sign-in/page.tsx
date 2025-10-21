@@ -21,11 +21,12 @@ export default function SignInPage() {
       title="Sign In"
       description="Access your account."
       form={<SignInForm />}
-      rightPanelTitle="Hello, Friend!"
-      rightPanelDescription="Enter your personal details and start journey with us."
+      rightPanelTitle="New Here?"
+      rightPanelDescription="Join ÌṢIRÒ today and simplify your bookkeeping. Track sales, manage expenses, and gain insights to grow your business effortlessly."
       rightPanelButtonText="Sign Up"
       rightPanelButtonHref="/auth/sign-up"
       isSignInPage={true}
+      rightPanelImageSrc="/logo.png" // Using the existing logo for now
     />
   );
 }

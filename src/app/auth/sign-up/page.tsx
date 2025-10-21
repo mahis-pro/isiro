@@ -9,11 +9,12 @@ export default function SignUpPage() {
       title="Sign Up"
       description="Get started with a new account."
       form={<SignUpForm />}
-      rightPanelTitle="Welcome Back!"
-      rightPanelDescription="To keep connected with us please login with your personal info."
+      rightPanelTitle="Already have an account?"
+      rightPanelDescription="Welcome back! Log in to continue managing your finances with ÌṢIRÒ. Your business insights are waiting."
       rightPanelButtonText="Sign In"
       rightPanelButtonHref="/auth/sign-in"
       isSignInPage={false}
+      rightPanelImageSrc="/logo.png" // Using the existing logo for now
     />
   );
 }
