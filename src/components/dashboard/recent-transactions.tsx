@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowDownLeft, ArrowUpRight, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/empty-state"; // Import EmptyState
 
 export function RecentTransactions() {
   const { transactions, isLoadingTransactions } = useTransactions();
@@ -100,10 +101,11 @@ export function RecentTransactions() {
             ))}
           </ul>
         ) : (
-          <div className="text-center text-muted-foreground py-8">
-            <p>No recent activity to show.</p>
-            <p className="text-sm">Add a transaction to get started!</p>
-          </div>
+          <EmptyState
+            title="No Recent Activity"
+            description="Add your first transaction or loan to see it here."
+            action={{ label: "Add New Entry", href: "/transactions/new" }}
+          />
         )}
       </CardContent>
     </Card>
