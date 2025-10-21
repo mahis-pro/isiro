@@ -35,7 +35,7 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 export function SessionContextProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Initialized to true
   const router = useRouter();
   const pathname = usePathname();
 
@@ -55,35 +55,43 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
+    const loadSessionAndProfile = async () => {
+      const { data: { session: initialSession } } = await supabase.auth.getSession();
+      if (!isMounted) return;
+
+      setSession(initialSession);
+      if (initialSession) {
+        await fetchProfile(initialSession.user.id);
+      }
+      if (isMounted) setIsLoading(false); // Set to false after initial load
+    };
+
+    loadSessionAndProfile();
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, currentSession: Session | null) => {
+      if (!isMounted) return;
+      // For subsequent auth state changes, just update session/profile,
+      // don't toggle the main isLoading state which is for initial app load.
       setSession(currentSession);
-      setIsLoading(true);
-
       if (currentSession) {
         await fetchProfile(currentSession.user.id);
       } else {
         setProfile(null);
       }
-      setIsLoading(false);
     });
 
-    // Initial session check
-    supabase.auth.getSession().then(({ data: { session: initialSession } }: { data: { session: Session | null } }) => {
-      setSession(initialSession);
-      if (initialSession) {
-        fetchProfile(initialSession.user.id).then(() => setIsLoading(false));
-      } else {
-        setIsLoading(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, []); // Empty dependency array for effect to run once on mount
 
   useEffect(() => {
-    if (isLoading) return; // Wait until loading is complete
+    if (isLoading) return; // Wait until initial loading is complete
 
     const isAuthPage = pathname.startsWith("/auth");
     const isOnboardingPage = pathname.startsWith("/onboarding");
