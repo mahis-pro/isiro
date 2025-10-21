@@ -9,16 +9,16 @@ import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { Insights } from "@/components/dashboard/insights";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 
 export default function DashboardPage() {
   const { transactions, isLoadingTransactions } = useTransactions();
-  const { loans, isLoadingLoans } = useLoans();
-  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+  const { loans, isLoadingLoans } = useLoans(); // Although not directly used in summary, keeping for consistency
+  const { formatCurrency } = useCurrencyFormatter();
 
   const summary = useMemo(() => {
-    if (isLoadingTransactions || isLoadingLoans) {
+    if (isLoadingTransactions) {
       return { totalSales: 0, totalExpenses: 0, balance: 0 };
     }
 
@@ -33,13 +33,13 @@ export default function DashboardPage() {
     const balance = totalSales - totalExpenses;
 
     return { totalSales, totalExpenses, balance };
-  }, [transactions, isLoadingTransactions, loans, isLoadingLoans]);
+  }, [transactions, isLoadingTransactions]);
 
   return (
     <div className="space-y-8">
       {/* 1. Summary Bar */}
       <div className="grid gap-4 md:grid-cols-3">
-        {isLoadingTransactions || isLoadingLoans ? (
+        {isLoadingTransactions ? (
           <>
             <Skeleton className="h-[100px] w-full" />
             <Skeleton className="h-[100px] w-full" />
@@ -51,13 +51,13 @@ export default function DashboardPage() {
               title="Total Sales"
               value={formatCurrency(summary.totalSales)}
               icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
-              trend="+20.1% from last month"
+              trend="+20.1% from last month" // Placeholder trend, can be made dynamic later
             />
             <SummaryCard
               title="Total Expenses"
               value={formatCurrency(summary.totalExpenses)}
               icon={<TrendingDown className="h-4 w-4 text-muted-foreground" />}
-              trend="+15.3% from last month"
+              trend="+15.3% from last month" // Placeholder trend, can be made dynamic later
             />
             <SummaryCard
               title="Balance"
