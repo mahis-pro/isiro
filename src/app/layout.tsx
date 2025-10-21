@@ -20,6 +20,9 @@ const fontPoppins = Poppins({
 export const metadata: Metadata = {
   title: "ÌṢIRÒ - Bookkeeping made simple",
   description: "A minimalist bookkeeping web app for small business owners.",
+  icons: {
+    icon: "/favicon.png", // Updated favicon path
+  },
 };
 
 export default function RootLayout({
