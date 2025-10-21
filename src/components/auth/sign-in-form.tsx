@@ -57,7 +57,7 @@ export function SignInForm() {
               <FormControl>
                 <div className="relative flex items-center">
                   <User className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Username" {...field} className="pl-10 input-auth-bg rounded-lg h-12" /> {/* Apply custom styles */}
+                  <Input placeholder="Username" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
                 </div>
               </FormControl>
               <FormMessage />
@@ -73,25 +73,31 @@ export function SignInForm() {
               <FormControl>
                 <div className="relative flex items-center">
                   <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                  <PasswordInput placeholder="Password" {...field} className="pl-10 input-auth-bg rounded-lg h-12" /> {/* Apply custom styles */}
+                  <PasswordInput placeholder="Password" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
                 </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={form.formState.isSubmitting}> {/* Apply custom gradient */}
+        <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={form.formState.isSubmitting}>
           Login Now
         </Button>
       </form>
       <div className="flex items-center my-6 justify-center">
-        <span className="mx-2 text-sm text-muted-foreground">Login with Others</span> {/* Updated text */}
+        <span className="mx-2 text-sm text-muted-foreground">Login with Others</span>
       </div>
-      <SocialAuthButtons /> {/* Render social auth buttons here */}
-      <div className="text-center text-sm mt-4">
+      <SocialAuthButtons />
+      <div className="text-center text-sm mt-4 space-y-2">
           <Link href="/auth/forgot-password" className="underline text-muted-foreground hover:text-foreground">
             Forgot your password?
           </Link>
+          <p className="text-muted-foreground">
+            Don't have an account?{" "}
+            <Link href="/auth/sign-up" className="underline text-primary hover:text-primary/80 font-medium">
+              Create New Account
+            </Link>
+          </p>
         </div>
     </Form>
   );

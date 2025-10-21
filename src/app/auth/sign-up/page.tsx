@@ -6,10 +6,10 @@ import { AuthPageContainer } from "@/components/auth/auth-page-container";
 export default function SignUpPage() {
   return (
     <AuthPageContainer
-      title="Sign Up" // Keep as "Sign Up"
-      description="Create your account to get started." // Placeholder description
+      title="Create New Account"
+      description="Join ÌṢIRÒ and simplify your bookkeeping. Get started in minutes!"
       form={<SignUpForm />}
-      rightPanelImageSrc="/auth-mockup.png" // Use the new mockup image
+      rightPanelImageSrc="/auth-mockup.png"
     />
   );
 }

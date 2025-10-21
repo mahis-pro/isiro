@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { PasswordInput } from "./password-input";
 import { SocialAuthButtons } from "./social-auth-buttons";
 import { User, Lock } from "lucide-react"; // Import icons
+import Link from "next/link"; // Import Link
 
 export function SignUpForm() {
   const router = useRouter();
@@ -97,13 +98,21 @@ export function SignUpForm() {
           )}
         />
         <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={form.formState.isSubmitting}>
-          Sign Up Now
+          Create Account
         </Button>
       </form>
       <div className="flex items-center my-6 justify-center">
         <span className="mx-2 text-sm text-muted-foreground">Sign Up with Others</span>
       </div>
       <SocialAuthButtons />
+      <div className="text-center text-sm mt-4">
+        <p className="text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/auth/sign-in" className="underline text-primary hover:text-primary/80 font-medium">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </Form>
   );
 }

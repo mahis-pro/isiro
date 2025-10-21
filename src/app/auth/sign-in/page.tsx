@@ -18,10 +18,10 @@ export default function SignInPage() {
 
   return (
     <AuthPageContainer
-      title="Login" // Changed to "Login" as per image
-      description="How to get started lorem ipsum dolor at?" // Placeholder description
+      title="Login"
+      description="Welcome back! Access your ÌṢIRÒ account to manage your business finances."
       form={<SignInForm />}
-      rightPanelImageSrc="/auth-mockup.png" // Use the new mockup image
+      rightPanelImageSrc="/auth-mockup.png"
     />
   );
 }
