@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 
 interface SummaryCardProps {
   title: string;
@@ -9,6 +9,7 @@ interface SummaryCardProps {
   icon: React.ReactNode;
   trend?: string;
   className?: string;
+  isBalanceCard?: boolean; // New prop to identify the balance card
 }
 
 export function SummaryCard({
@@ -17,9 +18,14 @@ export function SummaryCard({
   icon,
   trend,
   className,
+  isBalanceCard = false, // Default to false
 }: SummaryCardProps) {
   return (
-    <Card className={cn("shadow-sm", className)}>
+    <Card className={cn(
+      "shadow-sm",
+      isBalanceCard && "shadow-md border-2", // Stronger shadow and border for balance card
+      className
+    )}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}

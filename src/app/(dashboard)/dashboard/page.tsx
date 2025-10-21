@@ -14,7 +14,7 @@ import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 
 export default function DashboardPage() {
   const { transactions, isLoadingTransactions } = useTransactions();
-  const { loans, isLoadingLoans } = useLoans(); // Although not directly used in summary, keeping for consistency
+  const { loans, isLoadingLoans } = useLoans();
   const { formatCurrency } = useCurrencyFormatter();
 
   const summary = useMemo(() => {
@@ -35,11 +35,13 @@ export default function DashboardPage() {
     return { totalSales, totalExpenses, balance };
   }, [transactions, isLoadingTransactions]);
 
+  const isLoadingDashboard = isLoadingTransactions || isLoadingLoans;
+
   return (
     <div className="space-y-8">
       {/* 1. Summary Bar */}
       <div className="grid gap-4 md:grid-cols-3">
-        {isLoadingTransactions ? (
+        {isLoadingDashboard ? (
           <>
             <Skeleton className="h-[100px] w-full" />
             <Skeleton className="h-[100px] w-full" />
@@ -64,6 +66,7 @@ export default function DashboardPage() {
               value={formatCurrency(summary.balance)}
               icon={<Wallet className="h-4 w-4 text-muted-foreground" />}
               className={summary.balance >= 0 ? "bg-primary/10 border-primary" : "bg-destructive/10 border-destructive"}
+              isBalanceCard={true} // Mark as balance card
             />
           </>
         )}
@@ -72,14 +75,14 @@ export default function DashboardPage() {
       {/* 2. Quick Actions */}
       <QuickActions />
 
-      {/* 3. Cashflow Snapshot */}
-      <CashflowChart />
+      {/* 3. Cashflow Snapshot and Recent Transactions (side-by-side on larger screens) */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        <CashflowChart />
+        <RecentTransactions />
+      </div>
 
-      {/* 4. Recent Transactions */}
-      <RecentTransactions />
-
-      {/* 5. Insights */}
-      <Insights />
+      {/* 4. Insights */}
+      <Insights isLoading={isLoadingDashboard} />
     </div>
   );
 }

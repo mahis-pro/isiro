@@ -6,12 +6,13 @@ import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownLeft, ArrowUpRight, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
 
 export function RecentTransactions() {
   const { transactions, isLoadingTransactions } = useTransactions();
   const { loans, isLoadingLoans } = useLoans();
-  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+  const { formatCurrency } = useCurrencyFormatter();
 
   const recentActivity = useMemo(() => {
     const combined = [
@@ -25,9 +26,9 @@ export function RecentTransactions() {
       ...loans.map(l => ({
         id: l.id,
         type: 'loan' as const,
-        description: `Loan from ${l.lender_name}`, // Use lender_name
-        amount: l.loan_amount, // Use loan_amount
-        date: new Date(l.disbursement_date), // Use disbursement_date
+        description: `Loan from ${l.lender_name}`,
+        amount: l.loan_amount,
+        date: new Date(l.disbursement_date),
       })),
     ];
 
@@ -48,8 +49,19 @@ export function RecentTransactions() {
           <CardDescription>Your last 5 financial activities.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center text-muted-foreground py-8">
-            Loading recent activity...
+          <div className="space-y-4 py-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Skeleton className="h-9 w-9 rounded-full" />
+                  <div>
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-24 mt-1" />
+                  </div>
+                </div>
+                <Skeleton className="h-5 w-20" />
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
