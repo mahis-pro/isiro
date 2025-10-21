@@ -14,7 +14,7 @@ export async function ServerProfileDisplay() {
   if (session) {
     const { data, error } = await supabase
       .from("profiles")
-      .select("full_name, business_name, currency, business_type") // Select relevant profile fields
+      .select("first_name, last_name, business_name, currency, business_type") // Select first_name and last_name
       .eq("id", session.user.id)
       .single();
 
@@ -41,6 +41,8 @@ export async function ServerProfileDisplay() {
     );
   }
 
+  const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
+
   return (
     <Card>
       <CardHeader>
@@ -52,7 +54,7 @@ export async function ServerProfileDisplay() {
       <CardContent className="space-y-4">
         <div>
           <Label>Full Name (Server)</Label>
-          <Input value={profile.full_name || "N/A"} readOnly className="mt-1" />
+          <Input value={fullName || "N/A"} readOnly className="mt-1" />
         </div>
         <div>
           <Label>Email (Server)</Label>

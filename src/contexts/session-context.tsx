@@ -14,7 +14,8 @@ import { toast } from "sonner";
 
 export type Profile = {
   id: string;
-  full_name: string | null;
+  first_name: string | null; // Changed from full_name
+  last_name: string | null;  // Added last_name
   business_name: string | null;
   onboarded: boolean;
   currency: string;
@@ -42,7 +43,7 @@ export function SessionContextProvider({ children }: { children: ReactNode }) {
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
       .from("profiles")
-      .select("*")
+      .select("*") // Select all to get first_name and last_name
       .eq("id", userId)
       .single();
 

@@ -36,7 +36,9 @@ export default function Header() {
   const pathname = usePathname();
   const { session, profile, signOut } = useSession(); // Use useSession
 
-  const userFullName = profile?.full_name || session?.user?.email || "My Account";
+  const userFullName = profile?.first_name && profile?.last_name
+    ? `${profile.first_name} ${profile.last_name}`
+    : profile?.first_name || session?.user?.email || "My Account";
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">

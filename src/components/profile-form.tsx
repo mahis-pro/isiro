@@ -11,6 +11,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -19,7 +20,8 @@ import { useSession } from "@/contexts/session-context";
 import { useEffect } from "react";
 
 const profileFormSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters."),
+  firstName: z.string().min(1, "First name is required."),
+  lastName: z.string().min(1, "Last name is required."),
   email: z.string().email(),
 });
 
@@ -31,7 +33,8 @@ export function ProfileForm() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
     },
   });
@@ -39,7 +42,8 @@ export function ProfileForm() {
   useEffect(() => {
     if (profile && session) {
       form.reset({
-        fullName: profile.full_name || "",
+        firstName: profile.first_name || "",
+        lastName: profile.last_name || "",
         email: session.user.email || "",
       });
     }
@@ -47,7 +51,7 @@ export function ProfileForm() {
 
   async function onSubmit(data: ProfileFormValues) {
     try {
-      await updateProfile({ full_name: data.fullName });
+      await updateProfile({ first_name: data.firstName, last_name: data.lastName });
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile.");
@@ -67,19 +71,34 @@ export function ProfileForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your full name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your first name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your last name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -89,6 +108,9 @@ export function ProfileForm() {
                   <FormControl>
                     <Input placeholder="Your email" {...field} readOnly disabled />
                   </FormControl>
+                  <FormDescription>
+                    Email cannot be changed here.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
