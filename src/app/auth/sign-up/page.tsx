@@ -6,15 +6,10 @@ import { AuthPageContainer } from "@/components/auth/auth-page-container";
 export default function SignUpPage() {
   return (
     <AuthPageContainer
-      title="Sign Up"
-      description="Get started with a new account."
+      title="Sign Up" // Keep as "Sign Up"
+      description="Create your account to get started." // Placeholder description
       form={<SignUpForm />}
-      rightPanelTitle="Already have an account?"
-      rightPanelDescription="Welcome back! Log in to continue managing your finances with ÌṢIRÒ. Your business insights are waiting."
-      rightPanelButtonText="Sign In"
-      rightPanelButtonHref="/auth/sign-in"
-      isSignInPage={false}
-      rightPanelImageSrc="/logo.png" // Using the existing logo for now
+      rightPanelImageSrc="/auth-mockup.png" // Use the new mockup image
     />
   );
 }

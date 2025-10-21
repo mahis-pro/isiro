@@ -1,4 +1,5 @@
 import React from "react";
+import { AuthBackground } from "@/components/auth/auth-background"; // Import the new component
 
 export default function AuthLayout({
   children,
@@ -6,8 +7,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-background">
+    <AuthBackground> {/* Use the new AuthBackground component */}
       {children}
-    </div>
+    </AuthBackground>
   );
 }

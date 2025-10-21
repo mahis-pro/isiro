@@ -17,7 +17,8 @@ import { signUpSchema, SignUpFormValues } from "@/lib/schemas";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "./password-input";
-import { SocialAuthButtons } from "./social-auth-buttons"; // Import the new social buttons
+import { SocialAuthButtons } from "./social-auth-buttons";
+import { User, Lock } from "lucide-react"; // Import icons
 
 export function SignUpForm() {
   const router = useRouter();
@@ -34,23 +35,18 @@ export function SignUpForm() {
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
-      // Removed options: { emailRedirectTo: ... } to enable traditional email confirmation
     });
 
     if (error) {
       toast.error(error.message);
     } else {
       toast.success("Success! Please check your email to confirm your account.");
-      router.push("/auth/sign-in?message=check_email"); // Redirect to sign-in with a message
+      router.push("/auth/sign-in?message=check_email");
     }
   }
 
   return (
     <Form {...form}>
-      <SocialAuthButtons /> {/* Render social auth buttons here */}
-      <div className="flex items-center my-6 justify-center">
-        <span className="mx-2 text-sm text-muted-foreground">or use your email</span>
-      </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
@@ -59,7 +55,10 @@ export function SignUpForm() {
             <FormItem>
               <FormLabel className="sr-only">Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <div className="relative flex items-center">
+                  <User className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Email" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,7 +71,10 @@ export function SignUpForm() {
             <FormItem>
               <FormLabel className="sr-only">Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="Password" {...field} />
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                  <PasswordInput placeholder="Password" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -85,16 +87,23 @@ export function SignUpForm() {
             <FormItem>
               <FormLabel className="sr-only">Confirm Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="Confirm Password" {...field} />
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                  <PasswordInput placeholder="Confirm Password" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-          Sign Up
+        <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={form.formState.isSubmitting}>
+          Sign Up Now
         </Button>
       </form>
+      <div className="flex items-center my-6 justify-center">
+        <span className="mx-2 text-sm text-muted-foreground">Sign Up with Others</span>
+      </div>
+      <SocialAuthButtons />
     </Form>
   );
 }

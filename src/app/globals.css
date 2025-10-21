@@ -24,6 +24,14 @@
     --input: 0 0% 89.8%;
     --ring: 251 100% 55%; /* Darker shade of primary for focus */
     --radius: 0.5rem;
+
+    /* New colors for auth pages based on image */
+    --auth-bg-start: 240 60% 97%; /* Light lavender */
+    --auth-bg-end: 240 60% 99%; /* Even lighter lavender */
+    --auth-panel-bg: 250 70% 50%; /* Vibrant purple for right panel */
+    --auth-input-bg: 240 60% 98%; /* Very light grey-purple for inputs */
+    --auth-button-start: 251 100% 65%; /* Primary purple */
+    --auth-button-end: 251 80% 55%; /* Slightly darker purple */
   }
 
   .dark {
@@ -47,6 +55,14 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 251 100% 65%;
+
+    /* Dark mode adjustments for new auth colors */
+    --auth-bg-start: 240 10% 10%;
+    --auth-bg-end: 240 10% 15%;
+    --auth-panel-bg: 250 50% 30%;
+    --auth-input-bg: 240 10% 20%;
+    --auth-button-start: 251 100% 65%;
+    --auth-button-end: 251 80% 55%;
   }
 }
 
@@ -56,5 +72,19 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Custom background for auth pages */
+  .auth-gradient-bg {
+    background: linear-gradient(135deg, hsl(var(--auth-bg-start)) 0%, hsl(var(--auth-bg-end)) 100%);
+  }
+  /* Custom button gradient */
+  .btn-gradient-primary {
+    background: linear-gradient(to right, hsl(var(--auth-button-start)), hsl(var(--auth-button-end)));
+    @apply text-primary-foreground hover:opacity-90 transition-opacity;
+  }
+  /* Custom input background */
+  .input-auth-bg {
+    background-color: hsl(var(--auth-input-bg));
+    border-color: transparent; /* Remove default border */
   }
 }

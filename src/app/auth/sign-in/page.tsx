@@ -18,15 +18,10 @@ export default function SignInPage() {
 
   return (
     <AuthPageContainer
-      title="Sign In"
-      description="Access your account."
+      title="Login" // Changed to "Login" as per image
+      description="How to get started lorem ipsum dolor at?" // Placeholder description
       form={<SignInForm />}
-      rightPanelTitle="New Here?"
-      rightPanelDescription="Join ÌṢIRÒ today and simplify your bookkeeping. Track sales, manage expenses, and gain insights to grow your business effortlessly."
-      rightPanelButtonText="Sign Up"
-      rightPanelButtonHref="/auth/sign-up"
-      isSignInPage={true}
-      rightPanelImageSrc="/logo.png" // Using the existing logo for now
+      rightPanelImageSrc="/auth-mockup.png" // Use the new mockup image
     />
   );
 }
