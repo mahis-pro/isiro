@@ -18,15 +18,48 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
 
 function TransactionsContent() {
   const searchParams = useSearchParams();
   const tab = searchParams.get("tab") || "all";
-  const { transactions } = useTransactions();
-  const { loans } = useLoans();
+  const { transactions, isLoadingTransactions } = useTransactions();
+  const { loans, isLoadingLoans } = useLoans();
 
   const sales = transactions.filter((t) => t.type === "income");
   const expenses = transactions.filter((t) => t.type === "expense");
+
+  const renderTableContent = (data: any[], type: "transactions" | "loans") => {
+    const isLoading = type === "transactions" ? isLoadingTransactions : isLoadingLoans;
+    const EmptyComponent = (
+      <EmptyState
+        title={`No ${type === "transactions" ? "Transactions" : "Loans"} Yet`}
+        description={`Get started by adding your first ${type === "transactions" ? "sale or expense" : "loan"}.`}
+        action={{ label: `Add New ${type === "transactions" ? "Entry" : "Loan"}`, href: "/transactions/new" }}
+      />
+    );
+
+    if (isLoading) {
+      return (
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      );
+    }
+
+    if (data.length === 0) {
+      return EmptyComponent;
+    }
+
+    return type === "transactions" ? (
+      <TransactionsTable transactions={data} />
+    ) : (
+      <LoansTable loans={data} />
+    );
+  };
 
   return (
     <Tabs defaultValue={tab}>
@@ -57,15 +90,7 @@ function TransactionsContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {transactions.length > 0 ? (
-              <TransactionsTable transactions={transactions} />
-            ) : (
-              <EmptyState
-                title="No Transactions Yet"
-                description="Get started by adding your first sale or expense."
-                action={{ label: "Add New Entry", href: "/transactions/new" }}
-              />
-            )}
+            {renderTableContent(transactions, "transactions")}
           </CardContent>
         </Card>
       </TabsContent>
@@ -76,15 +101,7 @@ function TransactionsContent() {
             <CardDescription>A list of all your recent sales.</CardDescription>
           </CardHeader>
           <CardContent>
-            {sales.length > 0 ? (
-              <TransactionsTable transactions={sales} />
-            ) : (
-              <EmptyState
-                title="No Sales Recorded"
-                description="Your sales will appear here once you add them."
-                action={{ label: "Add New Sale", href: "/transactions/new?tab=income" }}
-              />
-            )}
+            {renderTableContent(sales, "transactions")}
           </CardContent>
         </Card>
       </TabsContent>
@@ -97,15 +114,7 @@ function TransactionsContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {expenses.length > 0 ? (
-              <TransactionsTable transactions={expenses} />
-            ) : (
-              <EmptyState
-                title="No Expenses Recorded"
-                description="Your expenses will appear here once you add them."
-                action={{ label: "Add New Expense", href: "/transactions/new?tab=expense" }}
-              />
-            )}
+            {renderTableContent(expenses, "transactions")}
           </CardContent>
         </Card>
       </TabsContent>
@@ -118,15 +127,7 @@ function TransactionsContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {loans.length > 0 ? (
-              <LoansTable loans={loans} />
-            ) : (
-              <EmptyState
-                title="No Loans Recorded"
-                description="Your loans will appear here once you add them."
-                action={{ label: "Add New Loan", href: "/transactions/new?tab=loan" }}
-              />
-            )}
+            {renderTableContent(loans, "loans")}
           </CardContent>
         </Card>
       </TabsContent>

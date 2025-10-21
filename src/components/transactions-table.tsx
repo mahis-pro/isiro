@@ -47,11 +47,15 @@ export default function TransactionsTable({
   const [editingTransaction, setEditingTransaction] =
     React.useState<Transaction | null>(null);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (transactionToDelete) {
-      deleteTransaction(transactionToDelete.id);
-      toast.success("Transaction deleted successfully!");
-      setTransactionToDelete(null);
+      try {
+        await deleteTransaction(transactionToDelete.id);
+        toast.success("Transaction deleted successfully!");
+        setTransactionToDelete(null);
+      } catch (error) {
+        // Error handled in context, just close dialog
+      }
     }
   };
 

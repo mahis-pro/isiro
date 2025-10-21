@@ -8,8 +8,8 @@ import { ArrowDownLeft, ArrowUpRight, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function RecentTransactions() {
-  const { transactions } = useTransactions();
-  const { loans } = useLoans();
+  const { transactions, isLoadingTransactions } = useTransactions();
+  const { loans, isLoadingLoans } = useLoans();
 
   const recentActivity = useMemo(() => {
     const combined = [
@@ -23,9 +23,9 @@ export function RecentTransactions() {
       ...loans.map(l => ({
         id: l.id,
         type: 'loan' as const,
-        description: `Loan from ${l.lenderName}`,
-        amount: l.loanAmount,
-        date: new Date(l.disbursementDate),
+        description: `Loan from ${l.lender_name}`, // Use lender_name
+        amount: l.loan_amount, // Use loan_amount
+        date: new Date(l.disbursement_date), // Use disbursement_date
       })),
     ];
 
@@ -37,6 +37,22 @@ export function RecentTransactions() {
     expense: <ArrowDownLeft className="h-5 w-5 text-destructive" />,
     loan: <Banknote className="h-5 w-5 text-secondary" />,
   };
+
+  if (isLoadingTransactions || isLoadingLoans) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+          <CardDescription>Your last 5 financial activities.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-8">
+            Loading recent activity...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>

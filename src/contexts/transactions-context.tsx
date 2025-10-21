@@ -1,7 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "./session-context"; // Import useSession
+import { toast } from "sonner";
 
 export type Transaction = {
   id: string;
@@ -10,7 +12,7 @@ export type Transaction = {
   amount: number;
   type: "income" | "expense";
   category: string;
-  paymentMethod: string;
+  payment_method: string; // Changed to payment_method to match DB
   customer?: string;
   vendor?: string;
   tax?: number;
@@ -19,95 +21,133 @@ export type Transaction = {
 
 interface TransactionsContextType {
   transactions: Transaction[];
-  addTransaction: (transaction: Omit<Transaction, "id" | "amount" | "date"> & { amount: number, date: Date }) => void;
-  updateTransaction: (id: string, data: Omit<Transaction, "id" | "amount" | "date"> & { amount: number, date: Date }) => void;
-  deleteTransaction: (id: string) => void;
+  addTransaction: (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => Promise<void>;
+  updateTransaction: (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
+  isLoadingTransactions: boolean;
 }
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(
   undefined
 );
 
-// Mock data to start with
-const mockTransactions: Transaction[] = [
-    {
-      id: "txn_1",
-      date: new Date("2024-06-15").toISOString(),
-      description: "Sale of Product A",
-      amount: 150.0,
-      type: "income",
-      category: "Product Sales",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      id: "txn_2",
-      date: new Date("2024-06-14").toISOString(),
-      description: "Office Supplies",
-      amount: -45.5,
-      type: "expense",
-      category: "Utilities",
-      paymentMethod: "Cash",
-    },
-    {
-      id: "txn_3",
-      date: new Date("2024-06-14").toISOString(),
-      description: "Client Payment - Project X",
-      amount: 2500.0,
-      type: "income",
-      category: "Service Revenue",
-      paymentMethod: "Bank Transfer",
-    },
-    {
-      id: "txn_4",
-      date: new Date("2024-06-13").toISOString(),
-      description: "Software Subscription",
-      amount: -29.99,
-      type: "expense",
-      category: "Miscellaneous",
-      paymentMethod: "POS",
-    },
-    {
-      id: "txn_5",
-      date: new Date("2024-06-12").toISOString(),
-      description: "Consulting Fee",
-      amount: 750.0,
-      type: "income",
-      category: "Service Revenue",
-      paymentMethod: "Bank Transfer",
-    },
-];
-
-
 export function TransactionsProvider({ children }: { children: ReactNode }) {
-  const [transactions, setTransactions] =
-    useState<Transaction[]>(mockTransactions);
+  const { session, isLoading: isLoadingSession } = useSession();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoadingTransactions, setIsLoadingTransactions] = useState(true);
 
-  const addTransaction = (transaction: Omit<Transaction, "id" | "amount" | "date"> & { amount: number, date: Date }) => {
-    const newTransaction: Transaction = {
+  const fetchTransactions = async () => {
+    if (!session?.user?.id) {
+      setTransactions([]);
+      setIsLoadingTransactions(false);
+      return;
+    }
+
+    setIsLoadingTransactions(true);
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching transactions:", error);
+      toast.error("Failed to load transactions.");
+      setTransactions([]);
+    } else {
+      setTransactions(data as Transaction[]);
+    }
+    setIsLoadingTransactions(false);
+  };
+
+  useEffect(() => {
+    if (!isLoadingSession) {
+      fetchTransactions();
+    }
+  }, [session?.user?.id, isLoadingSession]);
+
+  const addTransaction = async (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to add a transaction.");
+      return;
+    }
+
+    const newTransactionData = {
       ...transaction,
-      id: uuidv4(),
+      user_id: session.user.id,
       amount: transaction.type === 'expense' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
       date: transaction.date.toISOString(),
+      payment_method: transaction.paymentMethod, // Map paymentMethod to payment_method
     };
-    setTransactions((prev) => [newTransaction, ...prev]);
+
+    const { data, error } = await supabase
+      .from("transactions")
+      .insert(newTransactionData)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error adding transaction:", error);
+      toast.error("Failed to add transaction.");
+      throw error;
+    } else if (data) {
+      setTransactions((prev) => [data as Transaction, ...prev]);
+    }
   };
 
-  const updateTransaction = (id: string, data: Omit<Transaction, "id" | "amount" | "date"> & { amount: number, date: Date }) => {
-    const updatedTransaction: Transaction = {
+  const updateTransaction = async (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to update a transaction.");
+      return;
+    }
+
+    const updatedTransactionData = {
       ...data,
-      id,
       amount: data.type === 'expense' ? -Math.abs(data.amount) : Math.abs(data.amount),
       date: data.date.toISOString(),
+      payment_method: data.paymentMethod, // Map paymentMethod to payment_method
     };
-    setTransactions(prev => prev.map(t => t.id === id ? updatedTransaction : t));
+
+    const { data: updatedData, error } = await supabase
+      .from("transactions")
+      .update(updatedTransactionData)
+      .eq("id", id)
+      .eq("user_id", session.user.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating transaction:", error);
+      toast.error("Failed to update transaction.");
+      throw error;
+    } else if (updatedData) {
+      setTransactions(prev => prev.map(t => t.id === id ? updatedData as Transaction : t));
+    }
   };
 
-  const deleteTransaction = (id: string) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
+  const deleteTransaction = async (id: string) => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to delete a transaction.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", session.user.id);
+
+    if (error) {
+      console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction.");
+      throw error;
+    } else {
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
+    }
   };
 
   return (
-    <TransactionsContext.Provider value={{ transactions, addTransaction, updateTransaction, deleteTransaction }}>
+    <TransactionsContext.Provider value={{ transactions, addTransaction, updateTransaction, deleteTransaction, isLoadingTransactions }}>
       {children}
     </TransactionsContext.Provider>
   );

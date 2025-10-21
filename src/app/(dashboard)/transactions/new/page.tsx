@@ -28,22 +28,34 @@ function NewTransactionContent() {
   const { addLoan } = useLoans();
   const tab = searchParams.get("tab") || "income";
 
-  const handleAddIncome = (values: IncomeFormValues) => {
-    addTransaction({ ...values, type: "income" });
-    toast.success("Income recorded successfully!");
-    router.push("/transactions");
+  const handleAddIncome = async (values: IncomeFormValues) => {
+    try {
+      await addTransaction({ ...values, type: "income", paymentMethod: values.paymentMethod });
+      toast.success("Income recorded successfully!");
+      router.push("/transactions");
+    } catch (error) {
+      // Error handled in context
+    }
   };
 
-  const handleAddExpense = (values: ExpenseFormValues) => {
-    addTransaction({ ...values, type: "expense", tax: values.taxDeducted });
-    toast.success("Expense recorded successfully!");
-    router.push("/transactions");
+  const handleAddExpense = async (values: ExpenseFormValues) => {
+    try {
+      await addTransaction({ ...values, type: "expense", tax: values.taxDeducted, paymentMethod: values.paymentMethod });
+      toast.success("Expense recorded successfully!");
+      router.push("/transactions");
+    } catch (error) {
+      // Error handled in context
+    }
   };
 
-  const handleAddLoan = (values: LoanFormValues) => {
-    addLoan(values);
-    toast.success("Loan recorded successfully!");
-    router.push("/transactions?tab=loans");
+  const handleAddLoan = async (values: LoanFormValues) => {
+    try {
+      await addLoan(values);
+      toast.success("Loan recorded successfully!");
+      router.push("/transactions?tab=loans");
+    } catch (error) {
+      // Error handled in context
+    }
   };
 
   return (

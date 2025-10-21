@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransactions } from "@/contexts/transactions-context";
+import { useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -14,8 +15,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer } from "recharts";
-import { useMemo } from "react";
 import { format, getMonth } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
 
 const chartConfig = {
   revenue: {
@@ -37,9 +38,13 @@ const formatCurrency = (value: number) => {
 };
 
 export function ProfitLossReport() {
-  const { transactions } = useTransactions();
+  const { transactions, isLoadingTransactions } = useTransactions();
 
   const { chartData, totalRevenue, totalExpenses, netProfit } = useMemo(() => {
+    if (isLoadingTransactions || !transactions.length) {
+      return { chartData: [], totalRevenue: 0, totalExpenses: 0, netProfit: 0 };
+    }
+
     const monthlyData = Array.from({ length: 12 }, (_, i) => ({
       month: format(new Date(0, i), "MMM"),
       revenue: 0,
@@ -64,10 +69,31 @@ export function ProfitLossReport() {
     const netProfit = totalRevenue - totalExpenses;
 
     const currentMonth = getMonth(new Date());
-    const relevantMonths = monthlyData.slice(0, currentMonth + 6); // Show a bit more for mock data
+    const relevantMonths = monthlyData.slice(0, currentMonth + 1); // Show data up to current month
 
     return { chartData: relevantMonths, totalRevenue, totalExpenses, netProfit };
-  }, [transactions]);
+  }, [transactions, isLoadingTransactions]);
+
+  if (isLoadingTransactions) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Profit & Loss Statement</CardTitle>
+            <CardDescription>Revenue and expenses over time</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-[350px] w-full" />
+          </CardContent>
+        </Card>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card><CardContent className="p-4"><Skeleton className="h-8 w-3/4" /></CardContent></Card>
+          <Card><CardContent className="p-4"><Skeleton className="h-8 w-3/4" /></CardContent></Card>
+          <Card><CardContent className="p-4"><Skeleton className="h-8 w-3/4" /></CardContent></Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

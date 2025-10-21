@@ -43,11 +43,15 @@ export default function LoansTable({ loans }: LoansTableProps) {
   const [loanToDelete, setLoanToDelete] = React.useState<Loan | null>(null);
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>(null);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (loanToDelete) {
-      deleteLoan(loanToDelete.id);
-      toast.success("Loan deleted successfully!");
-      setLoanToDelete(null);
+      try {
+        await deleteLoan(loanToDelete.id);
+        toast.success("Loan deleted successfully!");
+        setLoanToDelete(null);
+      } catch (error) {
+        // Error handled in context
+      }
     }
   };
 
@@ -69,7 +73,7 @@ export default function LoansTable({ loans }: LoansTableProps) {
           {loans.map((loan) => (
             <TableRow key={loan.id}>
               <TableCell className="font-medium max-w-[150px] sm:max-w-xs truncate">
-                {loan.lenderName}
+                {loan.lender_name}
               </TableCell>
               <TableCell>
                 <Badge
@@ -80,10 +84,10 @@ export default function LoansTable({ loans }: LoansTableProps) {
                 </Badge>
               </TableCell>
               <TableCell className="hidden md:table-cell">
-                {new Date(loan.disbursementDate).toLocaleDateString()}
+                {new Date(loan.disbursement_date).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right text-secondary">
-                {loan.loanAmount.toLocaleString("en-NG", {
+                {loan.loan_amount.toLocaleString("en-NG", {
                   style: "currency",
                   currency: "NGN",
                 })}

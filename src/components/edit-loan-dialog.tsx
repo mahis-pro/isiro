@@ -21,17 +21,27 @@ interface EditLoanDialogProps {
 export function EditLoanDialog({ loan, onOpenChange }: EditLoanDialogProps) {
   const { updateLoan } = useLoans();
 
-  const handleUpdateLoan = (values: LoanFormValues) => {
+  const handleUpdateLoan = async (values: LoanFormValues) => {
     if (!loan) return;
-    updateLoan(loan.id, values);
-    toast.success("Loan updated successfully!");
-    onOpenChange(false);
+    try {
+      await updateLoan(loan.id, values);
+      toast.success("Loan updated successfully!");
+      onOpenChange(false);
+    } catch (error) {
+      // Error handled in context
+    }
   };
 
   const initialValues = loan ? {
-    ...loan,
-    disbursementDate: new Date(loan.disbursementDate),
-    repaymentStartDate: new Date(loan.repaymentStartDate),
+    loanAmount: loan.loan_amount,
+    lenderName: loan.lender_name,
+    disbursementDate: new Date(loan.disbursement_date),
+    repaymentStartDate: new Date(loan.repayment_start_date),
+    interestRate: loan.interest_rate,
+    loanDuration: loan.loan_duration,
+    repaymentFrequency: loan.repayment_frequency,
+    purpose: loan.purpose,
+    status: loan.status,
   } : undefined;
 
   return (
