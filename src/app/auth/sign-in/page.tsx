@@ -10,11 +10,8 @@ export default function SignInPage() {
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
 
-  useEffect(() => {
-    if (message === "check_email") {
-      toast.success("Email confirmed! Please sign in.");
-    }
-  }, [message]);
+  // Removed the useEffect that was prematurely showing "Email confirmed!" toast.
+  // The initial sign-up toast already instructs the user to check their email.
 
   return (
     <AuthPageContainer
