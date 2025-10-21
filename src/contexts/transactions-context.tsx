@@ -84,6 +84,8 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       notes: transaction.notes || null,       // Convert empty string to null
     };
 
+    console.log("Attempting to insert transaction with data:", newTransactionData); // Added debug log
+
     const { data, error } = await supabase
       .from("transactions")
       .insert(newTransactionData)
@@ -91,8 +93,15 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error adding transaction:", JSON.stringify(error, null, 2));
-      toast.error("Failed to add transaction.");
+      // Enhanced error logging
+      console.error("Error adding transaction:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        originalError: error // Log the full error object as well
+      });
+      toast.error(`Failed to add transaction: ${error.message || "Unknown error"}`);
       throw error;
     } else if (data) {
       setTransactions((prev) => [data as Transaction, ...prev]);
@@ -116,6 +125,8 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       notes: data.notes || null,       // Convert empty string to null
     };
 
+    console.log("Attempting to update transaction with data:", updatedTransactionData); // Added debug log
+
     const { data: updatedData, error } = await supabase
       .from("transactions")
       .update(updatedTransactionData)
@@ -125,8 +136,15 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error updating transaction:", JSON.stringify(error, null, 2));
-      toast.error("Failed to update transaction.");
+      // Enhanced error logging
+      console.error("Error updating transaction:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        originalError: error
+      });
+      toast.error(`Failed to update transaction: ${error.message || "Unknown error"}`);
       throw error;
     } else if (updatedData) {
       setTransactions(prev => prev.map(t => t.id === id ? updatedData as Transaction : t));
@@ -146,8 +164,14 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .eq("user_id", session.user.id);
 
     if (error) {
-      console.error("Error deleting transaction:", JSON.stringify(error, null, 2));
-      toast.error("Failed to delete transaction.");
+      console.error("Error deleting transaction:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        originalError: error
+      });
+      toast.error(`Failed to delete transaction: ${error.message || "Unknown error"}`);
       throw error;
     } else {
       setTransactions((prev) => prev.filter((t) => t.id !== id));
