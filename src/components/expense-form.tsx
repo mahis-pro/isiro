@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { expenseSchema, ExpenseFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 const expenseCategories = ["Utilities", "Raw Materials", "Salaries", "Marketing", "Repairs", "Miscellaneous"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
@@ -37,16 +38,17 @@ export function ExpenseForm({
   onSubmit,
   submitButtonText = "Save Expense",
 }: ExpenseFormProps) {
+  const { userCurrency } = useCurrencyFormatter(); // Use the hook
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
     defaultValues: initialValues || {
       description: "",
-      amount: 0, // Changed from undefined to 0
+      amount: 0,
       date: new Date(),
       category: "",
       paymentMethod: "",
       vendor: "",
-      taxDeducted: 0, // Changed from undefined to 0
+      taxDeducted: 0,
       notes: "",
     },
   });
@@ -59,7 +61,7 @@ export function ExpenseForm({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount (₦)</FormLabel>
+              <FormLabel>Amount ({userCurrency.toUpperCase()})</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
               </FormControl>

@@ -23,6 +23,7 @@ import {
 import { loanSchema, LoanFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 const repaymentFrequencies = ["Weekly", "Monthly", "Quarterly"];
 
@@ -37,14 +38,15 @@ export function LoanForm({
   onSubmit,
   submitButtonText = "Save Loan",
 }: LoanFormProps) {
+  const { userCurrency } = useCurrencyFormatter(); // Use the hook
   const form = useForm<LoanFormValues>({
     resolver: zodResolver(loanSchema),
     defaultValues: initialValues || {
       lenderName: "",
-      loanAmount: 0, // Changed from undefined to 0
+      loanAmount: 0,
       disbursementDate: new Date(),
       repaymentStartDate: undefined,
-      interestRate: 0, // Changed from undefined to 0
+      interestRate: 0,
       loanDuration: "",
       repaymentFrequency: undefined,
       purpose: "",
@@ -60,7 +62,7 @@ export function LoanForm({
           name="loanAmount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Loan Amount (₦)</FormLabel>
+              <FormLabel>Loan Amount ({userCurrency.toUpperCase()})</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
               </FormControl>

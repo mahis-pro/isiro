@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { EditLoanDialog } from "./edit-loan-dialog";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 interface LoansTableProps {
   loans: Loan[];
@@ -42,6 +43,7 @@ export default function LoansTable({ loans }: LoansTableProps) {
   const { deleteLoan } = useLoans();
   const [loanToDelete, setLoanToDelete] = React.useState<Loan | null>(null);
   const [editingLoan, setEditingLoan] = React.useState<Loan | null>(null);
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
 
   const handleDelete = async () => {
     if (loanToDelete) {
@@ -87,10 +89,7 @@ export default function LoansTable({ loans }: LoansTableProps) {
                 {new Date(loan.disbursement_date).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right text-secondary">
-                {loan.loan_amount.toLocaleString("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                })}
+                {formatCurrency(loan.loan_amount)}
               </TableCell>
               <TableCell>
                 <DropdownMenu>

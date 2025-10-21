@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 interface TransactionsTableProps {
   transactions: Transaction[];
@@ -46,6 +47,7 @@ export default function TransactionsTable({
     React.useState<Transaction | null>(null);
   const [editingTransaction, setEditingTransaction] =
     React.useState<Transaction | null>(null);
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
 
   const handleDelete = async () => {
     if (transactionToDelete) {
@@ -104,10 +106,7 @@ export default function TransactionsTable({
                     : "text-destructive"
                 )}
               >
-                {Math.abs(transaction.amount).toLocaleString("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                })}
+                {formatCurrency(Math.abs(transaction.amount))}
               </TableCell>
               <TableCell>
                 <DropdownMenu>

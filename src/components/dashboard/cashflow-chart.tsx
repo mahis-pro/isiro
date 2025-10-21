@@ -8,18 +8,12 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useTransactions } from "@/contexts/transactions-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, getMonth, getDate, getWeek } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 export function CashflowChart() {
   const [timeRange, setTimeRange] = useState("monthly");
   const { transactions, isLoadingTransactions } = useTransactions();
+  const { formatCurrency, userCurrency } = useCurrencyFormatter(); // Use the hook
 
   const chartData = useMemo(() => {
     if (isLoadingTransactions || !transactions.length) return [];
@@ -120,7 +114,7 @@ export function CashflowChart() {
             <BarChart data={chartData}>
               <CartesianGrid vertical={false} />
               <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `₦${Number(value) / 1000}k`} />
+              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => formatCurrency(Number(value))} />
               <Tooltip cursor={false} content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />} />
               <Bar dataKey="inflow" fill="hsl(var(--primary))" radius={4} />
               <Bar dataKey="outflow" fill="hsl(var(--destructive))" radius={4} />

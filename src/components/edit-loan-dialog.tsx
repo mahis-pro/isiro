@@ -37,10 +37,10 @@ export function EditLoanDialog({ loan, onOpenChange }: EditLoanDialogProps) {
     lenderName: loan.lender_name,
     disbursementDate: new Date(loan.disbursement_date),
     repaymentStartDate: new Date(loan.repayment_start_date),
-    interestRate: loan.interest_rate,
-    loanDuration: loan.loan_duration,
-    repaymentFrequency: loan.repayment_frequency,
-    purpose: loan.purpose,
+    interestRate: loan.interest_rate ?? undefined, // Convert null to undefined
+    loanDuration: loan.loan_duration ?? undefined, // Convert null to undefined
+    repaymentFrequency: loan.repayment_frequency ?? undefined, // Convert null to undefined
+    purpose: loan.purpose ?? undefined, // Convert null to undefined
     status: loan.status,
   } : undefined;
 

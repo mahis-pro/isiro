@@ -6,10 +6,12 @@ import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowDownLeft, ArrowUpRight, Banknote } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 export function RecentTransactions() {
   const { transactions, isLoadingTransactions } = useTransactions();
   const { loans, isLoadingLoans } = useLoans();
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
 
   const recentActivity = useMemo(() => {
     const combined = [
@@ -80,7 +82,7 @@ export function RecentTransactions() {
                   item.type === 'expense' && "text-destructive",
                   item.type === 'loan' && "text-secondary"
                 )}>
-                  {`₦${Math.abs(item.amount).toLocaleString()}`}
+                  {formatCurrency(Math.abs(item.amount))}
                 </p>
               </li>
             ))}

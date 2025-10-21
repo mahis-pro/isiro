@@ -10,18 +10,12 @@ import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { Insights } from "@/components/dashboard/insights";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 2,
-  }).format(value);
-};
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 export default function DashboardPage() {
   const { transactions, isLoadingTransactions } = useTransactions();
   const { loans, isLoadingLoans } = useLoans();
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
 
   const summary = useMemo(() => {
     if (isLoadingTransactions || isLoadingLoans) {

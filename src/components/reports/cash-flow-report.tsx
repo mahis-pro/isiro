@@ -4,25 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Pie, PieChart, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Separator } from "@/components/ui/separator";
-
-const cashFlowData = [
-  { category: "Operating", value: 1200000, fill: "hsl(var(--primary))" },
-  { category: "Investing", value: -300000, fill: "hsl(var(--accent))" },
-  { category: "Financing", value: 500000, fill: "hsl(var(--secondary))" },
-];
-
-const chartData = cashFlowData.map(item => ({ ...item, value: Math.abs(item.value) }));
-const netCashFlow = cashFlowData.reduce((sum, item) => sum + item.value, 0);
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 export function CashFlowReport() {
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+
+  const cashFlowData = [
+    { category: "Operating", value: 1200000, fill: "hsl(var(--primary))" },
+    { category: "Investing", value: -300000, fill: "hsl(var(--accent))" },
+    { category: "Financing", value: 500000, fill: "hsl(var(--secondary))" },
+  ];
+
+  const chartData = cashFlowData.map(item => ({ ...item, value: Math.abs(item.value) }));
+  const netCashFlow = cashFlowData.reduce((sum, item) => sum + item.value, 0);
+
   return (
     <Card>
       <CardHeader>

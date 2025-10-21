@@ -3,31 +3,26 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { FileText } from "lucide-react";
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
-
-const assets = [
-  { item: "Cash", amount: 1600000 },
-  { item: "Accounts Receivable", amount: 450000 },
-  { item: "Inventory", amount: 800000 },
-];
-
-const liabilities = [
-  { item: "Accounts Payable", amount: 320000 },
-  { item: "Loans", amount: 500000 },
-];
-
-const totalAssets = assets.reduce((sum, asset) => sum + asset.amount, 0);
-const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.amount, 0);
-const totalEquity = totalAssets - totalLiabilities;
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 export function BalanceSheetReport() {
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+
+  const assets = [
+    { item: "Cash", amount: 1600000 },
+    { item: "Accounts Receivable", amount: 450000 },
+    { item: "Inventory", amount: 800000 },
+  ];
+
+  const liabilities = [
+    { item: "Accounts Payable", amount: 320000 },
+    { item: "Loans", amount: 500000 },
+  ];
+
+  const totalAssets = assets.reduce((sum, asset) => sum + asset.amount, 0);
+  const totalLiabilities = liabilities.reduce((sum, liability) => sum + liability.amount, 0);
+  const totalEquity = totalAssets - totalLiabilities;
+
   return (
     <Card>
       <CardHeader>

@@ -17,6 +17,7 @@ import {
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer } from "recharts";
 import { format, getMonth } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 const chartConfig = {
   revenue: {
@@ -29,16 +30,9 @@ const chartConfig = {
   },
 };
 
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
-  }).format(value);
-};
-
 export function ProfitLossReport() {
   const { transactions, isLoadingTransactions } = useTransactions();
+  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
 
   const { chartData, totalRevenue, totalExpenses, netProfit } = useMemo(() => {
     if (isLoadingTransactions || !transactions.length) {
@@ -113,7 +107,7 @@ export function ProfitLossReport() {
                   tickMargin={10}
                   axisLine={false}
                 />
-                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => `₦${Number(value) / 1000}k`} />
+                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => formatCurrency(Number(value))} />
                 <Tooltip
                   cursor={{ fill: 'hsl(var(--muted))' }}
                   content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}

@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { incomeSchema, IncomeFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 const incomeCategories = ["Product Sales", "Service Revenue", "Commission", "Others"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
@@ -37,16 +38,17 @@ export function IncomeForm({
   onSubmit,
   submitButtonText = "Save Income",
 }: IncomeFormProps) {
+  const { userCurrency } = useCurrencyFormatter(); // Use the hook
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
     defaultValues: initialValues || {
       description: "",
-      amount: 0, // Changed from undefined to 0
+      amount: 0,
       date: new Date(),
       category: "",
       paymentMethod: "",
       customer: "",
-      tax: 0, // Changed from undefined to 0
+      tax: 0,
     },
   });
 
@@ -58,7 +60,7 @@ export function IncomeForm({
           name="amount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount (₦)</FormLabel>
+              <FormLabel>Amount ({userCurrency.toUpperCase()})</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} />
               </FormControl>
