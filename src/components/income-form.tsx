@@ -41,12 +41,12 @@ export function IncomeForm({
     resolver: zodResolver(incomeSchema),
     defaultValues: initialValues || {
       description: "",
-      amount: undefined,
+      amount: 0, // Changed from undefined to 0
       date: new Date(),
       category: "",
       paymentMethod: "",
       customer: "",
-      tax: undefined,
+      tax: 0, // Changed from undefined to 0
     },
   });
 

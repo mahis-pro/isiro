@@ -41,10 +41,10 @@ export function LoanForm({
     resolver: zodResolver(loanSchema),
     defaultValues: initialValues || {
       lenderName: "",
-      loanAmount: undefined,
+      loanAmount: 0, // Changed from undefined to 0
       disbursementDate: new Date(),
       repaymentStartDate: undefined,
-      interestRate: undefined,
+      interestRate: 0, // Changed from undefined to 0
       loanDuration: "",
       repaymentFrequency: undefined,
       purpose: "",

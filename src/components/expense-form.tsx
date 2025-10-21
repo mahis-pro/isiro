@@ -41,12 +41,12 @@ export function ExpenseForm({
     resolver: zodResolver(expenseSchema),
     defaultValues: initialValues || {
       description: "",
-      amount: undefined,
+      amount: 0, // Changed from undefined to 0
       date: new Date(),
       category: "",
       paymentMethod: "",
       vendor: "",
-      taxDeducted: undefined,
+      taxDeducted: 0, // Changed from undefined to 0
       notes: "",
     },
   });
