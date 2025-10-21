@@ -51,7 +51,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .order("date", { ascending: false });
 
     if (error) {
-      console.error("Error fetching transactions:", error);
+      console.error("Error fetching transactions:", JSON.stringify(error, null, 2));
       toast.error("Failed to load transactions.");
       setTransactions([]);
     } else {
@@ -77,7 +77,11 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       user_id: session.user.id,
       amount: transaction.type === 'expense' ? -Math.abs(transaction.amount) : Math.abs(transaction.amount),
       date: transaction.date.toISOString(),
-      payment_method: transaction.paymentMethod, // Map paymentMethod to payment_method
+      payment_method: transaction.paymentMethod,
+      customer: transaction.customer || null, // Convert empty string to null
+      vendor: transaction.vendor || null,     // Convert empty string to null
+      tax: transaction.tax === 0 ? null : transaction.tax, // Convert 0 to null for optional tax
+      notes: transaction.notes || null,       // Convert empty string to null
     };
 
     const { data, error } = await supabase
@@ -87,7 +91,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error adding transaction:", error);
+      console.error("Error adding transaction:", JSON.stringify(error, null, 2));
       toast.error("Failed to add transaction.");
       throw error;
     } else if (data) {
@@ -105,7 +109,11 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       ...data,
       amount: data.type === 'expense' ? -Math.abs(data.amount) : Math.abs(data.amount),
       date: data.date.toISOString(),
-      payment_method: data.paymentMethod, // Map paymentMethod to payment_method
+      payment_method: data.paymentMethod,
+      customer: data.customer || null, // Convert empty string to null
+      vendor: data.vendor || null,     // Convert empty string to null
+      tax: data.tax === 0 ? null : data.tax, // Convert 0 to null for optional tax
+      notes: data.notes || null,       // Convert empty string to null
     };
 
     const { data: updatedData, error } = await supabase
@@ -117,7 +125,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error updating transaction:", error);
+      console.error("Error updating transaction:", JSON.stringify(error, null, 2));
       toast.error("Failed to update transaction.");
       throw error;
     } else if (updatedData) {
@@ -138,7 +146,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       .eq("user_id", session.user.id);
 
     if (error) {
-      console.error("Error deleting transaction:", error);
+      console.error("Error deleting transaction:", JSON.stringify(error, null, 2));
       toast.error("Failed to delete transaction.");
       throw error;
     } else {

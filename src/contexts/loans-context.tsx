@@ -8,14 +8,14 @@ import { LoanFormValues } from "@/lib/schemas";
 
 export type Loan = {
   id: string;
-  loan_amount: number; // Changed to loan_amount to match DB
-  lender_name: string; // Changed to lender_name to match DB
-  disbursement_date: string; // Changed to disbursement_date to match DB
-  repayment_start_date: string; // Changed to repayment_start_date to match DB
-  interest_rate?: number; // Changed to interest_rate to match DB
-  loan_duration?: string; // Changed to loan_duration to match DB
-  repayment_frequency?: string; // Changed to repayment_frequency to match DB
-  purpose?: string;
+  loan_amount: number;
+  lender_name: string;
+  disbursement_date: string;
+  repayment_start_date: string;
+  interest_rate?: number | null; // Allow null
+  loan_duration?: string | null; // Allow null
+  repayment_frequency?: string | null; // Allow null
+  purpose?: string | null; // Allow null
   status: "Active" | "Closed";
 };
 
@@ -49,7 +49,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       .order("disbursement_date", { ascending: false });
 
     if (error) {
-      console.error("Error fetching loans:", error);
+      console.error("Error fetching loans:", JSON.stringify(error, null, 2));
       toast.error("Failed to load loans.");
       setLoans([]);
     } else {
@@ -76,10 +76,10 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       lender_name: loanData.lenderName,
       disbursement_date: loanData.disbursementDate.toISOString(),
       repayment_start_date: loanData.repaymentStartDate.toISOString(),
-      interest_rate: loanData.interestRate,
-      loan_duration: loanData.loanDuration,
-      repayment_frequency: loanData.repaymentFrequency,
-      purpose: loanData.purpose,
+      interest_rate: loanData.interestRate === 0 ? null : loanData.interestRate, // Convert 0 to null for optional
+      loan_duration: loanData.loanDuration || null, // Convert empty string to null
+      repayment_frequency: loanData.repaymentFrequency || null, // Convert empty string to null
+      purpose: loanData.purpose || null, // Convert empty string to null
       status: loanData.status,
     };
 
@@ -90,7 +90,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error adding loan:", error);
+      console.error("Error adding loan:", JSON.stringify(error, null, 2));
       toast.error("Failed to add loan.");
       throw error;
     } else if (data) {
@@ -109,10 +109,10 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       lender_name: loanData.lenderName,
       disbursement_date: loanData.disbursementDate.toISOString(),
       repayment_start_date: loanData.repaymentStartDate.toISOString(),
-      interest_rate: loanData.interestRate,
-      loan_duration: loanData.loanDuration,
-      repayment_frequency: loanData.repaymentFrequency,
-      purpose: loanData.purpose,
+      interest_rate: loanData.interestRate === 0 ? null : loanData.interestRate, // Convert 0 to null for optional
+      loan_duration: loanData.loanDuration || null, // Convert empty string to null
+      repayment_frequency: loanData.repaymentFrequency || null, // Convert empty string to null
+      purpose: loanData.purpose || null, // Convert empty string to null
       status: loanData.status,
     };
 
@@ -125,7 +125,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       .single();
 
     if (error) {
-      console.error("Error updating loan:", error);
+      console.error("Error updating loan:", JSON.stringify(error, null, 2));
       toast.error("Failed to update loan.");
       throw error;
     } else if (updatedData) {
@@ -146,7 +146,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       .eq("user_id", session.user.id);
 
     if (error) {
-      console.error("Error deleting loan:", error);
+      console.error("Error deleting loan:", JSON.stringify(error, null, 2));
       toast.error("Failed to delete loan.");
       throw error;
     } else {
