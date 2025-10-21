@@ -28,12 +28,18 @@ import { useEffect } from "react";
 const businessFormSchema = z.object({
   businessName: z.string().optional(),
   businessType: z.string({ required_error: "Please select a business type." }),
+  otherBusinessTypeDetails: z.string().optional(), // New field for 'Other' details
   currency: z.string({ required_error: "Please select a currency." }),
 });
 
 type BusinessFormValues = z.infer<typeof businessFormSchema>;
 
-const businessTypes = ["Vendor", "Artisan", "Retail", "Other"];
+const businessTypes = [
+  { id: "vendor", label: "Vendor" },
+  { id: "artisan", label: "Artisan" },
+  { id: "retail", label: "Retail" },
+  { id: "other", label: "Other" },
+];
 const currencies = [
   { id: "ngn", label: "NGN (₦)" },
   { id: "usd", label: "USD ($)" },
@@ -49,6 +55,7 @@ export function BusinessForm() {
     defaultValues: {
       businessName: "",
       businessType: "",
+      otherBusinessTypeDetails: "", // Initialize new field
       currency: "ngn",
     },
   });
@@ -58,6 +65,7 @@ export function BusinessForm() {
       form.reset({
         businessName: profile.business_name || "",
         businessType: profile.business_type || "",
+        otherBusinessTypeDetails: profile.other_business_type_details || "", // Set value for new field
         currency: profile.currency || "ngn",
       });
     }
@@ -68,6 +76,7 @@ export function BusinessForm() {
       await updateProfile({
         business_name: data.businessName,
         business_type: data.businessType,
+        other_business_type_details: data.businessType === "other" ? data.otherBusinessTypeDetails : null, // Save only if 'Other' is selected
         currency: data.currency,
       });
       toast.success("Business settings updated successfully!");
@@ -75,6 +84,8 @@ export function BusinessForm() {
       toast.error("Failed to update business settings.");
     }
   }
+
+  const selectedBusinessType = form.watch("businessType");
 
   if (isLoading) {
     return <Card><CardContent className="p-6">Loading business settings...</CardContent></Card>;
@@ -116,7 +127,7 @@ export function BusinessForm() {
                     </FormControl>
                     <SelectContent>
                       {businessTypes.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                        <SelectItem key={type.id} value={type.id}>{type.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -124,6 +135,21 @@ export function BusinessForm() {
                 </FormItem>
               )}
             />
+            {selectedBusinessType === "other" && (
+              <FormField
+                control={form.control}
+                name="otherBusinessTypeDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Specify Business Type</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Event Planner, Consultant" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="currency"

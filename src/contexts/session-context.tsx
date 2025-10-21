@@ -20,6 +20,7 @@ export type Profile = {
   onboarded: boolean;
   currency: string;
   business_type: string | null;
+  other_business_type_details: string | null; // New field
   updated_at: string | null;
 };
 
