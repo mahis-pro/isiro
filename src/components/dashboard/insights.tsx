@@ -1,3 +1,5 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Lightbulb } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton

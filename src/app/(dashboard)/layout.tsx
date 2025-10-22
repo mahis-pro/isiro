@@ -7,6 +7,7 @@ import { LoansProvider, useLoans } from "@/contexts/loans-context"; // Import us
 import { BottomNav } from "@/components/bottom-nav";
 import { useSession } from "@/contexts/session-context";
 import { useRouter } from "next/navigation";
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton"; // Import DashboardSkeleton
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { session, profile, isLoading: isLoadingSession } = useSession();
@@ -24,8 +25,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
   if (isLoadingSession || !session || (session && profile && !profile.onboarded) || isLoadingTransactions || isLoadingLoans) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading dashboard...
+      <div className="flex min-h-screen w-full flex-col bg-background">
+        <Header /> {/* Keep header visible during loading */}
+        <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-6">
+          <DashboardSkeleton />
+        </main>
+        <BottomNav /> {/* Keep bottom nav visible during loading */}
       </div>
     );
   }
