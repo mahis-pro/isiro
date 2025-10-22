@@ -38,15 +38,16 @@ export function IncomeForm({
 
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
-    defaultValues: initialValues || {
-      description: "",
-      amount: 0,
-      date: new Date(),
-      category: initialValues?.category || "", // Use initial value if present
-      paymentMethod: initialValues?.paymentMethod || "", // Use initial value if present
-      customer: "",
-      tax: 0,
-      paymentStatus: "received",
+    defaultValues: {
+      description: initialValues?.description || "",
+      amount: initialValues?.amount || 0,
+      date: initialValues?.date || new Date(),
+      category: initialValues?.category || "",
+      paymentMethod: initialValues?.paymentMethod || "",
+      customer: initialValues?.customer || "",
+      tax: initialValues?.tax || 0,
+      paymentStatus: initialValues?.paymentStatus || "received",
+      receipt: initialValues?.receipt,
     },
   });
 

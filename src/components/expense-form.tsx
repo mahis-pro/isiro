@@ -38,16 +38,17 @@ export function ExpenseForm({
 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
-    defaultValues: initialValues || {
-      description: "",
-      amount: 0,
-      date: new Date(),
-      category: initialValues?.category || "", // Use initial value if present
-      paymentMethod: initialValues?.paymentMethod || "", // Use initial value if present
-      vendor: "",
-      taxPaid: 0,
-      notes: "",
-      paymentStatus: "paid",
+    defaultValues: {
+      description: initialValues?.description || "",
+      amount: initialValues?.amount || 0,
+      date: initialValues?.date || new Date(),
+      category: initialValues?.category || "",
+      paymentMethod: initialValues?.paymentMethod || "",
+      vendor: initialValues?.vendor || "",
+      taxPaid: initialValues?.taxPaid || 0,
+      notes: initialValues?.notes || "",
+      paymentStatus: initialValues?.paymentStatus || "paid",
+      invoice: initialValues?.invoice,
     },
   });
 
