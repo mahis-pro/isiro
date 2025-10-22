@@ -141,13 +141,14 @@ export function ProfitLossReport() {
               <p>
                 <span className="font-semibold text-foreground">Total Expenses:</span> This includes all the costs of running your business, from supplies to salaries. These are the funds that went out to keep things moving.
               </p>
-              <p>
+              {/* Changed <p> to <div> to allow <ul> nesting */}
+              <div>
                 <span className="font-semibold text-foreground">Net Profit (or Loss):</span> This is the most important number! It's what's left after all your expenses are subtracted from your revenue.
                 <ul className="list-disc list-inside ml-4 mt-1">
                   <li>If positive, your business is profitable – you earned more than you spent!</li>
                   <li>If negative, your business experienced a loss – you spent more than you earned.</li>
                 </ul>
-              </p>
+              </div>
             </div>
           </div>
         </CardContent>
