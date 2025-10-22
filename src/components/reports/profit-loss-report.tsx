@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 import { cn } from "@/lib/utils";
+import { Info } from "lucide-react"; // Import the Info icon
 
 export function ProfitLossReport() {
   const { transactions, isLoadingTransactions } = useTransactions();
@@ -125,9 +126,30 @@ export function ProfitLossReport() {
             </Card>
           </div>
 
-          <p className="text-sm text-muted-foreground mt-4">
-            Your **Net Profit** (or **Net Loss**) is the ultimate measure of your business's financial success over a period. It shows how much money your business truly earned after all sales are counted and all expenses are paid. A positive Net Profit means your business is profitable, while a negative number indicates a loss for the period.
-          </p>
+          <div className="space-y-4 mt-6 p-4 bg-muted/50 rounded-lg border border-muted">
+            <h3 className="font-semibold text-base flex items-center gap-2">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              Understanding Your Profit & Loss
+            </h3>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>
+                Your **Profit & Loss Statement** is like a report card for your business, showing how much money you truly earned over a specific period.
+              </p>
+              <p>
+                <span className="font-semibold text-foreground">Total Revenue:</span> This is all the money your business brought in from selling products or services. It's the starting point of your earnings.
+              </p>
+              <p>
+                <span className="font-semibold text-foreground">Total Expenses:</span> This includes all the costs of running your business, from supplies to salaries. These are the funds that went out to keep things moving.
+              </p>
+              <p>
+                <span className="font-semibold text-foreground">Net Profit (or Loss):</span> This is the most important number! It's what's left after all your expenses are subtracted from your revenue.
+                <ul className="list-disc list-inside ml-4 mt-1">
+                  <li>If positive, your business is profitable – you earned more than you spent!</li>
+                  <li>If negative, your business experienced a loss – you spent more than you earned.</li>
+                </ul>
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
