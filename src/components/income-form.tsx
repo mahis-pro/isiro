@@ -22,8 +22,6 @@ import { CategorySelectWithAdd } from "./category-select-with-add";
 import { AccountSelect } from "./account-select"; // Import new component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Keep Select for payment status
 
-// Removed hardcoded paymentMethods list
-
 interface IncomeFormProps {
   initialValues?: Partial<IncomeFormValues>;
   onSubmit: (values: IncomeFormValues) => void;
@@ -44,8 +42,8 @@ export function IncomeForm({
       description: "",
       amount: 0,
       date: new Date(),
-      category: incomeCategories[0]?.account_name || "",
-      paymentMethod: assetAccounts[0]?.account_name || "", // Use first asset account as default
+      category: initialValues?.category || "", // Use initial value if present
+      paymentMethod: initialValues?.paymentMethod || "", // Use initial value if present
       customer: "",
       tax: 0,
       paymentStatus: "received",
@@ -57,6 +55,7 @@ export function IncomeForm({
     if (incomeCategories.length > 0 && !form.getValues('category')) {
       form.setValue('category', incomeCategories[0].account_name);
     }
+    // FIX: Set default payment method only if it's currently empty and accounts are loaded
     if (assetAccounts.length > 0 && !form.getValues('paymentMethod')) {
       form.setValue('paymentMethod', assetAccounts[0].account_name);
     }
