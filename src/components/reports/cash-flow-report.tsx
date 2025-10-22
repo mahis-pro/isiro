@@ -4,19 +4,78 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Pie, PieChart, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Separator } from "@/components/ui/separator";
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { useTransactions } from "@/contexts/transactions-context";
+import { useLoans } from "@/contexts/loans-context";
+import { useMemo } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CashFlowReport() {
-  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+  const { transactions, isLoadingTransactions } = useTransactions();
+  const { loans, isLoadingLoans } = useLoans();
+  const { formatCurrency } = useCurrencyFormatter();
 
-  const cashFlowData = [
-    { category: "Operating", value: 1200000, fill: "hsl(var(--primary))" },
-    { category: "Investing", value: -300000, fill: "hsl(var(--accent))" },
-    { category: "Financing", value: 500000, fill: "hsl(var(--secondary))" },
-  ];
+  const { cashFlowData, netCashFlow } = useMemo(() => {
+    if (isLoadingTransactions || isLoadingLoans) {
+      return { cashFlowData: [], netCashFlow: 0 };
+    }
 
+    // 1. Operating Activities (Net Income - Net Expense)
+    const operatingCashFlow = transactions.reduce((sum, t) => sum + t.amount, 0);
+
+    // 2. Financing Activities (Loan Disbursements - Repayments, simplified to just disbursements for now)
+    // Note: We assume loan amounts are positive cash inflows upon disbursement.
+    const financingCashFlow = loans
+      .filter(l => l.status === 'Active') // Only consider active loans as current financing
+      .reduce((sum, l) => sum + l.loan_amount, 0);
+
+    // 3. Investing Activities (Kept at 0 for simplicity in a minimalist app)
+    const investingCashFlow = 0;
+
+    const data = [
+      { category: "Operating Activities", value: operatingCashFlow, fill: "hsl(var(--primary))" },
+      { category: "Financing Activities", value: financingCashFlow, fill: "hsl(var(--secondary))" },
+      { category: "Investing Activities", value: investingCashFlow, fill: "hsl(var(--accent))" },
+    ].filter(item => item.value !== 0); // Filter out zero values
+
+    const total = data.reduce((sum, item) => sum + item.value, 0);
+
+    return { cashFlowData: data, netCashFlow: total };
+  }, [transactions, loans, isLoadingTransactions, isLoadingLoans]);
+
+  // Chart data uses absolute values for the pie chart visualization
   const chartData = cashFlowData.map(item => ({ ...item, value: Math.abs(item.value) }));
-  const netCashFlow = cashFlowData.reduce((sum, item) => sum + item.value, 0);
+
+  if (isLoadingTransactions || isLoadingLoans) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Cashflow Statement</CardTitle>
+          <CardDescription>Money in and out of your business</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[250px] w-full" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (cashFlowData.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Cashflow Statement</CardTitle>
+          <CardDescription>Money in and out of your business</CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="text-center py-8">
+            <p className="text-lg font-semibold">No Cash Flow Data</p>
+            <p className="text-muted-foreground mt-2">Add transactions and loans to see your cash movements.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -64,7 +123,7 @@ export function CashFlowReport() {
           <Separator />
           <div className="flex justify-between items-center font-bold">
             <p>Net Cashflow</p>
-            <p>{formatCurrency(netCashFlow)}</p>
+            <p className={netCashFlow < 0 ? "text-destructive" : ""}>{formatCurrency(netCashFlow)}</p>
           </div>
         </div>
       </CardContent>
