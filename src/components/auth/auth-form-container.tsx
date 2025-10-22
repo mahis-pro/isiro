@@ -4,6 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils"; // Import cn for utility
 
 interface AuthFormContainerProps {
   title: string;
@@ -29,7 +30,10 @@ export function AuthFormContainer({
           />
         </Link>
       </div>
-      <Card className="shadow-xl">
+      <Card className={cn(
+        "shadow-2xl backdrop-blur-sm", // Added backdrop-blur-sm (requires custom CSS if not supported by Tailwind config)
+        "bg-card/80 border-white/20 dark:bg-card/70 dark:border-white/10" // Translucent background and subtle border
+      )}>
         <CardHeader className="text-center p-6 pb-0">
           <CardTitle className="text-3xl font-poppins font-bold">{title}</CardTitle>
           <CardDescription className="mt-2 text-muted-foreground">{description}</CardDescription>
