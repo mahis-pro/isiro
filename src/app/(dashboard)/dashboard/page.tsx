@@ -5,12 +5,12 @@ import { useLoans } from "@/contexts/loans-context";
 import { useMemo } from "react";
 import { SummaryCard } from "@/components/dashboard/summary-card";
 import { QuickActions } from "@/components/dashboard/quick-actions";
-import { CashflowChart } from "@/components/dashboard/cashflow-chart";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { Insights } from "@/components/dashboard/insights";
 import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { CashflowSummaryGraphical } from "@/components/dashboard/cashflow-summary-graphical"; // Import the new component
 
 export default function DashboardPage() {
   const { transactions, isLoadingTransactions } = useTransactions();
@@ -77,7 +77,7 @@ export default function DashboardPage() {
 
       {/* 3. Cashflow Snapshot and Recent Transactions (side-by-side on larger screens) */}
       <div className="grid gap-8 lg:grid-cols-2">
-        <CashflowChart />
+        <CashflowSummaryGraphical /> {/* Replaced CashflowChart */}
         <RecentTransactions />
       </div>
 

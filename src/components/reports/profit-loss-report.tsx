@@ -9,64 +9,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer } from "recharts";
-import { format, getMonth } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
-
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--primary))",
-  },
-  expenses: {
-    label: "Expenses",
-    color: "hsl(var(--destructive))",
-  },
-};
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { cn } from "@/lib/utils";
 
 export function ProfitLossReport() {
   const { transactions, isLoadingTransactions } = useTransactions();
-  const { formatCurrency } = useCurrencyFormatter(); // Use the hook
+  const { formatCurrency } = useCurrencyFormatter();
 
-  const { chartData, totalRevenue, totalExpenses, netProfit } = useMemo(() => {
+  const { totalRevenue, totalExpenses, netProfit } = useMemo(() => {
     if (isLoadingTransactions || !transactions.length) {
-      return { chartData: [], totalRevenue: 0, totalExpenses: 0, netProfit: 0 };
+      return { totalRevenue: 0, totalExpenses: 0, netProfit: 0 };
     }
 
-    const monthlyData = Array.from({ length: 12 }, (_, i) => ({
-      month: format(new Date(0, i), "MMM"),
-      revenue: 0,
-      expenses: 0,
-    }));
-
-    let totalRevenue = 0;
-    let totalExpenses = 0;
+    let currentTotalRevenue = 0;
+    let currentTotalExpenses = 0;
 
     transactions.forEach((t) => {
-      const monthIndex = getMonth(new Date(t.date));
       if (t.type === "income") {
-        monthlyData[monthIndex].revenue += t.amount;
-        totalRevenue += t.amount;
+        currentTotalRevenue += t.amount;
       } else {
-        const expenseAmount = Math.abs(t.amount);
-        monthlyData[monthIndex].expenses += expenseAmount;
-        totalExpenses += expenseAmount;
+        currentTotalExpenses += Math.abs(t.amount);
       }
     });
 
-    const netProfit = totalRevenue - totalExpenses;
+    const currentNetProfit = currentTotalRevenue - currentTotalExpenses;
 
-    const currentMonth = getMonth(new Date());
-    const relevantMonths = monthlyData.slice(0, currentMonth + 1); // Show data up to current month
-
-    return { chartData: relevantMonths, totalRevenue, totalExpenses, netProfit };
+    return { totalRevenue: currentTotalRevenue, totalExpenses: currentTotalExpenses, netProfit: currentNetProfit };
   }, [transactions, isLoadingTransactions]);
+
+  const isProfitable = netProfit >= 0;
+  const totalMagnitude = totalRevenue + totalExpenses; // For calculating relative widths
+  const revenuePercentage = totalMagnitude > 0 ? (totalRevenue / totalMagnitude) * 100 : 0;
+  const expensesPercentage = totalMagnitude > 0 ? (totalExpenses / totalMagnitude) * 100 : 0;
 
   if (isLoadingTransactions) {
     return (
@@ -77,7 +52,7 @@ export function ProfitLossReport() {
             <CardDescription>Revenue and expenses over time</CardDescription>
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-[350px] w-full" />
+            <Skeleton className="h-[200px] w-full" />
           </CardContent>
         </Card>
         <div className="grid gap-4 md:grid-cols-3">
@@ -94,72 +69,67 @@ export function ProfitLossReport() {
       <Card>
         <CardHeader>
           <CardTitle>Profit & Loss Statement</CardTitle>
-          <CardDescription>Revenue and expenses over time</CardDescription>
+          <CardDescription>Your business's financial report card.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[350px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                />
-                <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => formatCurrency(Number(value))} />
-                <Tooltip
-                  cursor={{ fill: 'hsl(var(--muted))' }}
-                  content={<ChartTooltipContent formatter={(value) => formatCurrency(value as number)} />}
-                />
-                <Legend />
-                <Bar
-                  dataKey="revenue"
-                  fill="var(--color-revenue)"
-                  radius={[4, 4, 0, 0]}
-                />
-                <Bar
-                  dataKey="expenses"
-                  fill="var(--color-expenses)"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+        <CardContent className="space-y-6">
+          <div className="relative h-8 w-full rounded-lg overflow-hidden bg-muted">
+            <div
+              className="absolute left-0 top-0 h-full bg-primary transition-all duration-500 ease-out"
+              style={{ width: `${revenuePercentage}%` }}
+            />
+            <div
+              className="absolute right-0 top-0 h-full bg-destructive transition-all duration-500 ease-out"
+              style={{ width: `${expensesPercentage}%` }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary-foreground">
+              {totalRevenue > 0 && totalExpenses > 0 && (
+                <span className="z-10">
+                  {revenuePercentage.toFixed(0)}% Revenue / {expensesPercentage.toFixed(0)}% Expenses
+                </span>
+              )}
+              {totalRevenue > 0 && totalExpenses === 0 && <span className="z-10">100% Revenue</span>}
+              {totalRevenue === 0 && totalExpenses > 0 && <span className="z-10">100% Expenses</span>}
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">
+                  {formatCurrency(totalRevenue)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-destructive">
+                  {formatCurrency(totalExpenses)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className={cn("border-2", isProfitable ? "bg-secondary/10 border-secondary" : "bg-destructive/10 border-destructive")}>
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={cn("text-2xl font-bold", isProfitable ? "text-secondary" : "text-destructive")}>
+                  {formatCurrency(netProfit)}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <p className="text-sm text-muted-foreground mt-4">
+            Your **Net Profit** (or **Net Loss**) is the ultimate measure of your business's financial success over a period. It shows how much money your business truly earned after all sales are counted and all expenses are paid. A positive Net Profit means your business is profitable, while a negative number indicates a loss for the period.
+          </p>
         </CardContent>
       </Card>
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">
-              {formatCurrency(totalRevenue)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-destructive">
-              {formatCurrency(totalExpenses)}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-secondary/10 border-secondary">
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Net Profit</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-secondary">
-              {formatCurrency(netProfit)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
