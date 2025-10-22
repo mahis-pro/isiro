@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react"; // FIX: Added React import
+import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,8 @@ import {
 import { incomeSchema, IncomeFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
-import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
+import { useAccounts } from "@/contexts/accounts-context";
+import { CategorySelectWithAdd } from "./category-select-with-add"; // Import new component
 
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
@@ -40,7 +41,7 @@ export function IncomeForm({
   submitButtonText = "Save Income",
 }: IncomeFormProps) {
   const { userCurrency } = useCurrencyFormatter();
-  const { incomeCategories } = useAccounts(); // Use dynamic categories
+  const { incomeCategories, isLoadingAccounts } = useAccounts(); // Get loading state
 
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
@@ -48,7 +49,7 @@ export function IncomeForm({
       description: "",
       amount: 0,
       date: new Date(),
-      category: incomeCategories[0]?.account_name || "", // Set default to first category if available
+      category: incomeCategories[0]?.account_name || "",
       paymentMethod: "",
       customer: "",
       tax: 0,
@@ -98,18 +99,16 @@ export function IncomeForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {incomeCategories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.account_name}>{cat.account_name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <CategorySelectWithAdd
+                  categories={incomeCategories}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select a category"
+                  type="income"
+                  disabled={isLoadingAccounts}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react"; // FIX: Added React import
+import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,8 @@ import {
 import { expenseSchema, ExpenseFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
-import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
+import { useAccounts } from "@/contexts/accounts-context";
+import { CategorySelectWithAdd } from "./category-select-with-add"; // Import new component
 
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
@@ -40,7 +41,7 @@ export function ExpenseForm({
   submitButtonText = "Save Expense",
 }: ExpenseFormProps) {
   const { userCurrency } = useCurrencyFormatter();
-  const { expenseCategories } = useAccounts(); // Use dynamic categories
+  const { expenseCategories, isLoadingAccounts } = useAccounts(); // Get loading state
 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
@@ -48,7 +49,7 @@ export function ExpenseForm({
       description: "",
       amount: 0,
       date: new Date(),
-      category: expenseCategories[0]?.account_name || "", // Set default to first category if available
+      category: expenseCategories[0]?.account_name || "",
       paymentMethod: "",
       vendor: "",
       taxPaid: 0,
@@ -99,18 +100,16 @@ export function ExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {expenseCategories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.account_name}>{cat.account_name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <CategorySelectWithAdd
+                  categories={expenseCategories}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select a category"
+                  type="expense"
+                  disabled={isLoadingAccounts}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
