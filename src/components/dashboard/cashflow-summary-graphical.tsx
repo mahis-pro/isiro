@@ -53,6 +53,7 @@ export function CashflowSummaryGraphical() {
         if (t.type === "income") {
           currentInflow += t.amount;
         } else {
+          // Expenses are stored as negative numbers, use Math.abs for outflow
           currentOutflow += Math.abs(t.amount);
         }
       }

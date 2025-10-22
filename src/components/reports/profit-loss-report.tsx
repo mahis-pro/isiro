@@ -30,6 +30,7 @@ export function ProfitLossReport() {
       if (t.type === "income") {
         currentTotalRevenue += t.amount;
       } else {
+        // Expenses are stored as negative numbers in the DB, use Math.abs for reporting
         currentTotalExpenses += Math.abs(t.amount);
       }
     });

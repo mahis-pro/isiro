@@ -67,6 +67,7 @@ export function CashflowChart() {
         if (t.type === "income") {
           aggregatedData[key].inflow += t.amount;
         } else {
+          // Expenses are stored as negative numbers, use Math.abs for outflow
           aggregatedData[key].outflow += Math.abs(t.amount);
         }
       }
