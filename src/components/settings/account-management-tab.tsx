@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AccountFormDialog } from "./account-form-dialog";
 import { cn } from "@/lib/utils";
+import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
 
 export type Account = {
   id: string;
@@ -30,38 +31,17 @@ export type Account = {
 
 export function AccountManagementTab() {
   const { session } = useSession();
-  const [accounts, setAccounts] = useState<Account[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { accounts, isLoadingAccounts, refreshAccounts } = useAccounts(); // FIX: Destructuring isLoadingAccounts directly
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<'income' | 'expense' | null>(null);
 
-  const fetchAccounts = async () => {
-    if (!session?.user?.id) return;
-
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from("accounts")
-      .select("*")
-      .eq("user_id", session.user.id)
-      .order("account_name", { ascending: true });
-
-    if (error) {
-      console.error("Error fetching accounts:", error);
-      toast.error("Failed to load categories.");
-    } else {
-      setAccounts(data as Account[]);
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchAccounts();
-  }, [session?.user?.id]);
+  // We no longer need local state for accounts or fetchAccounts, as they come from context.
+  // We only need to trigger refreshAccounts on success.
 
   const handleSuccess = () => {
-    fetchAccounts();
+    refreshAccounts(); // Refresh the global context state
     setIsDialogOpen(false);
     setEditingAccount(null);
   };
@@ -80,7 +60,7 @@ export function AccountManagementTab() {
         toast.error(`Failed to delete category: ${error.message}`);
       } else {
         toast.success("Category deleted successfully.");
-        setAccounts(prev => prev.filter(a => a.id !== accountToDelete.id));
+        refreshAccounts(); // Refresh the global context state
         setAccountToDelete(null);
       }
     } catch (e) {
@@ -134,7 +114,7 @@ export function AccountManagementTab() {
           </div>
         </div>
       ))}
-      {list.length === 0 && !isLoading && (
+      {list.length === 0 && !isLoadingAccounts && (
         <p className="text-sm text-muted-foreground p-4 text-center border rounded-lg">
           No {type} categories found. Click 'Add New' to create one.
         </p>
@@ -142,7 +122,7 @@ export function AccountManagementTab() {
     </div>
   );
 
-  if (isLoading) {
+  if (isLoadingAccounts) {
     return (
       <Card>
         <CardContent className="p-6 space-y-4">

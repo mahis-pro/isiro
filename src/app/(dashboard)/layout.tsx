@@ -2,17 +2,19 @@
 
 import React, { useEffect } from "react";
 import Header from "@/components/header";
-import { TransactionsProvider, useTransactions } from "@/contexts/transactions-context"; // Import useTransactions
-import { LoansProvider, useLoans } from "@/contexts/loans-context"; // Import useLoans
+import { TransactionsProvider, useTransactions } from "@/contexts/transactions-context";
+import { LoansProvider, useLoans } from "@/contexts/loans-context";
+import { AccountsProvider, useAccounts } from "@/contexts/accounts-context"; // Import AccountsProvider and useAccounts
 import { BottomNav } from "@/components/bottom-nav";
 import { useSession } from "@/contexts/session-context";
 import { useRouter } from "next/navigation";
-import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton"; // Import DashboardSkeleton
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { session, profile, isLoading: isLoadingSession } = useSession();
-  const { isLoadingTransactions } = useTransactions(); // Get loading state from TransactionsContext
-  const { isLoadingLoans } = useLoans(); // Get loading state from LoansContext
+  const { isLoadingTransactions } = useTransactions();
+  const { isLoadingLoans } = useLoans();
+  const { isLoadingAccounts } = useAccounts(); // Get loading state from AccountsContext
   const router = useRouter();
 
   useEffect(() => {
@@ -23,14 +25,15 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     }
   }, [isLoadingSession, session, profile, router]);
 
-  if (isLoadingSession || !session || (session && profile && !profile.onboarded) || isLoadingTransactions || isLoadingLoans) {
+  // Include isLoadingAccounts in the overall loading check
+  if (isLoadingSession || !session || (session && profile && !profile.onboarded) || isLoadingTransactions || isLoadingLoans || isLoadingAccounts) {
     return (
       <div className="flex min-h-screen w-full flex-col bg-background">
-        <Header /> {/* Keep header visible during loading */}
+        <Header />
         <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-6">
           <DashboardSkeleton />
         </main>
-        <BottomNav /> {/* Keep bottom nav visible during loading */}
+        <BottomNav />
       </div>
     );
   }
@@ -54,7 +57,9 @@ export default function DashboardLayout({
   return (
     <TransactionsProvider>
       <LoansProvider>
-        <DashboardContent>{children}</DashboardContent>
+        <AccountsProvider> {/* New Provider */}
+          <DashboardContent>{children}</DashboardContent>
+        </AccountsProvider>
       </LoansProvider>
     </TransactionsProvider>
   );

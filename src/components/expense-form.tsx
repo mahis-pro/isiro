@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react"; // FIX: Added React import
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -22,9 +23,9 @@ import {
 } from "@/components/ui/select";
 import { expenseSchema, ExpenseFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
 
-const expenseCategories = ["Utilities", "Raw Materials", "Salaries", "Marketing", "Repairs", "Miscellaneous"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
 interface ExpenseFormProps {
@@ -38,21 +39,30 @@ export function ExpenseForm({
   onSubmit,
   submitButtonText = "Save Expense",
 }: ExpenseFormProps) {
-  const { userCurrency } = useCurrencyFormatter(); // Use the hook
+  const { userCurrency } = useCurrencyFormatter();
+  const { expenseCategories } = useAccounts(); // Use dynamic categories
+
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseSchema),
     defaultValues: initialValues || {
       description: "",
       amount: 0,
       date: new Date(),
-      category: "",
+      category: expenseCategories[0]?.account_name || "", // Set default to first category if available
       paymentMethod: "",
       vendor: "",
-      taxPaid: 0, // Renamed
+      taxPaid: 0,
       notes: "",
-      paymentStatus: "paid", // Default to paid
+      paymentStatus: "paid",
     },
   });
+
+  // Ensure default category is set if initialValues didn't provide one and categories loaded later
+  React.useEffect(() => {
+    if (!initialValues?.category && expenseCategories.length > 0 && !form.getValues('category')) {
+      form.setValue('category', expenseCategories[0].account_name);
+    }
+  }, [expenseCategories, form, initialValues]);
 
   return (
     <Form {...form}>
@@ -89,7 +99,7 @@ export function ExpenseForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -97,7 +107,7 @@ export function ExpenseForm({
                 </FormControl>
                 <SelectContent>
                   {expenseCategories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat.id} value={cat.account_name}>{cat.account_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -142,7 +152,7 @@ export function ExpenseForm({
         />
         <FormField
           control={form.control}
-          name="taxPaid" // Renamed
+          name="taxPaid"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tax Paid (Optional)</FormLabel>

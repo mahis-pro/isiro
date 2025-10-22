@@ -25,6 +25,7 @@ import { Account } from "./account-management-tab";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/contexts/session-context";
 import { useEffect } from "react";
+import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
 
 const formSchema = z.object({
   accountName: z.string().min(2, {
@@ -50,6 +51,7 @@ export function AccountFormDialog({
   onSuccess,
 }: AccountFormDialogProps) {
   const { session } = useSession();
+  const { refreshAccounts } = useAccounts(); // Use refreshAccounts
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,6 +96,8 @@ export function AccountFormDialog({
         if (error) throw error;
         toast.success("New category added successfully.");
       }
+      
+      refreshAccounts(); // Refresh the global context state after successful operation
       onSuccess();
     } catch (error: any) {
       console.error("Error saving account:", error);

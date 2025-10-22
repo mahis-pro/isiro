@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react"; // FIX: Added React import
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -22,9 +23,9 @@ import {
 } from "@/components/ui/select";
 import { incomeSchema, IncomeFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
-import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
+import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
 
-const incomeCategories = ["Product Sales", "Service Revenue", "Commission", "Others"];
 const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
 
 interface IncomeFormProps {
@@ -38,20 +39,29 @@ export function IncomeForm({
   onSubmit,
   submitButtonText = "Save Income",
 }: IncomeFormProps) {
-  const { userCurrency } = useCurrencyFormatter(); // Use the hook
+  const { userCurrency } = useCurrencyFormatter();
+  const { incomeCategories } = useAccounts(); // Use dynamic categories
+
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
     defaultValues: initialValues || {
       description: "",
       amount: 0,
       date: new Date(),
-      category: "",
+      category: incomeCategories[0]?.account_name || "", // Set default to first category if available
       paymentMethod: "",
       customer: "",
       tax: 0,
-      paymentStatus: "received", // Default to received
+      paymentStatus: "received",
     },
   });
+
+  // Ensure default category is set if initialValues didn't provide one and categories loaded later
+  React.useEffect(() => {
+    if (!initialValues?.category && incomeCategories.length > 0 && !form.getValues('category')) {
+      form.setValue('category', incomeCategories[0].account_name);
+    }
+  }, [incomeCategories, form, initialValues]);
 
   return (
     <Form {...form}>
@@ -88,7 +98,7 @@ export function IncomeForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -96,7 +106,7 @@ export function IncomeForm({
                 </FormControl>
                 <SelectContent>
                   {incomeCategories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat.id} value={cat.account_name}>{cat.account_name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
