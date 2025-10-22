@@ -14,20 +14,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { incomeSchema, IncomeFormValues } from "@/lib/schemas";
 import { DatePicker } from "./date-picker";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 import { useAccounts } from "@/contexts/accounts-context";
-import { CategorySelectWithAdd } from "./category-select-with-add"; // Import new component
+import { CategorySelectWithAdd } from "./category-select-with-add";
+import { AccountSelect } from "./account-select"; // Import new component
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Keep Select for payment status
 
-const paymentMethods = ["Cash", "Bank Transfer", "POS", "Wallet"];
+// Removed hardcoded paymentMethods list
 
 interface IncomeFormProps {
   initialValues?: Partial<IncomeFormValues>;
@@ -41,7 +36,7 @@ export function IncomeForm({
   submitButtonText = "Save Income",
 }: IncomeFormProps) {
   const { userCurrency } = useCurrencyFormatter();
-  const { incomeCategories, isLoadingAccounts } = useAccounts(); // Get loading state
+  const { incomeCategories, assetAccounts, isLoadingAccounts } = useAccounts(); // Get assetAccounts
 
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
@@ -50,19 +45,22 @@ export function IncomeForm({
       amount: 0,
       date: new Date(),
       category: incomeCategories[0]?.account_name || "",
-      paymentMethod: "",
+      paymentMethod: assetAccounts[0]?.account_name || "", // Use first asset account as default
       customer: "",
       tax: 0,
       paymentStatus: "received",
     },
   });
 
-  // Ensure default category is set if initialValues didn't provide one and categories loaded later
+  // Ensure default category/payment method is set if initialValues didn't provide one and accounts loaded later
   React.useEffect(() => {
-    if (!initialValues?.category && incomeCategories.length > 0 && !form.getValues('category')) {
+    if (incomeCategories.length > 0 && !form.getValues('category')) {
       form.setValue('category', incomeCategories[0].account_name);
     }
-  }, [incomeCategories, form, initialValues]);
+    if (assetAccounts.length > 0 && !form.getValues('paymentMethod')) {
+      form.setValue('paymentMethod', assetAccounts[0].account_name);
+    }
+  }, [incomeCategories, assetAccounts, form, initialValues]);
 
   return (
     <Form {...form}>
@@ -98,7 +96,7 @@ export function IncomeForm({
           name="category"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Category</FormLabel>
+              <FormLabel>Category (Revenue Account)</FormLabel>
               <FormControl>
                 <CategorySelectWithAdd
                   categories={incomeCategories}
@@ -118,19 +116,16 @@ export function IncomeForm({
           name="paymentMethod"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Payment Method</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a payment method" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {paymentMethods.map((method) => (
-                    <SelectItem key={method} value={method}>{method}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>Received Into (Asset Account)</FormLabel>
+              <FormControl>
+                <AccountSelect
+                  accounts={assetAccounts}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Select an asset account"
+                  disabled={isLoadingAccounts}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -186,7 +181,7 @@ export function IncomeForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="received">Received</SelectItem>
-                  <SelectItem value="outstanding">Outstanding</SelectItem>
+                  <SelectItem value="outstanding">Outstanding (A/R)</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

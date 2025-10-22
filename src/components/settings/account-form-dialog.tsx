@@ -21,11 +21,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Account } from "./account-management-tab";
-import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@/contexts/session-context";
-import { useEffect } from "react";
+import { Account } from "@/contexts/accounts-context"; // Use Account type from context
 import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
+import { useEffect } from "react"; // <-- Added useEffect import
 
 const formSchema = z.object({
   accountName: z.string().min(2, {
@@ -50,8 +48,7 @@ export function AccountFormDialog({
   accountType,
   onSuccess,
 }: AccountFormDialogProps) {
-  const { session } = useSession();
-  const { refreshAccounts } = useAccounts(); // Use refreshAccounts
+  const { addAccount, updateAccount } = useAccounts(); // Use context functions
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,36 +65,21 @@ export function AccountFormDialog({
   }, [initialAccount, form]);
 
   const onSubmit = async (values: FormValues) => {
-    if (!session?.user?.id || !accountType) return;
+    if (!accountType) return;
 
-    const baseData = {
-      account_name: values.accountName,
-      user_id: session.user.id,
-      account_type: accountType === 'income' ? 'Revenue' : 'Expense',
-    };
+    const type = accountType === 'income' ? 'Revenue' : 'Expense';
 
     try {
       if (initialAccount) {
         // Update existing account
-        const { error } = await supabase
-          .from("accounts")
-          .update({ account_name: values.accountName })
-          .eq("id", initialAccount.id)
-          .eq("user_id", session.user.id);
-
-        if (error) throw error;
+        await updateAccount(initialAccount.id, values.accountName);
         toast.success("Category updated successfully.");
       } else {
         // Add new account
-        const { error } = await supabase
-          .from("accounts")
-          .insert(baseData);
-
-        if (error) throw error;
+        await addAccount(values.accountName, type);
         toast.success("New category added successfully.");
       }
       
-      refreshAccounts(); // Refresh the global context state after successful operation
       onSuccess();
     } catch (error: any) {
       console.error("Error saving account:", error);

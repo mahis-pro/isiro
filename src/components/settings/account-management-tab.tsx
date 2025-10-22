@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, Landmark, TrendingUp, TrendingDown } from "lucide-react";
-import { useSession } from "@/contexts/session-context";
-import { supabase } from "@/integrations/supabase/client";
+import { Plus, Edit, Trash2, TrendingUp, TrendingDown } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -20,28 +18,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AccountFormDialog } from "./account-form-dialog";
 import { cn } from "@/lib/utils";
-import { useAccounts } from "@/contexts/accounts-context"; // Import useAccounts
-
-export type Account = {
-  id: string;
-  account_name: string;
-  account_type: "Asset" | "Liability" | "Equity" | "Revenue" | "Expense";
-  is_default: boolean;
-};
+import { useAccounts, Account } from "@/contexts/accounts-context"; // Import Account type from context
 
 export function AccountManagementTab() {
-  const { session } = useSession();
-  const { accounts, isLoadingAccounts, refreshAccounts } = useAccounts(); // FIX: Destructuring isLoadingAccounts directly
+  const { accounts, isLoadingAccounts, refreshAccounts, deleteAccount } = useAccounts(); // Use context functions
   const [accountToDelete, setAccountToDelete] = useState<Account | null>(null);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<'income' | 'expense' | null>(null);
 
-  // We no longer need local state for accounts or fetchAccounts, as they come from context.
-  // We only need to trigger refreshAccounts on success.
-
   const handleSuccess = () => {
-    refreshAccounts(); // Refresh the global context state
+    // refreshAccounts is now handled inside the dialog's submit function via context
     setIsDialogOpen(false);
     setEditingAccount(null);
   };
@@ -50,21 +37,12 @@ export function AccountManagementTab() {
     if (!accountToDelete) return;
 
     try {
-      const { error } = await supabase
-        .from("accounts")
-        .delete()
-        .eq("id", accountToDelete.id);
-
-      if (error) {
-        console.error("Error deleting account:", error);
-        toast.error(`Failed to delete category: ${error.message}`);
-      } else {
-        toast.success("Category deleted successfully.");
-        refreshAccounts(); // Refresh the global context state
-        setAccountToDelete(null);
-      }
-    } catch (e) {
-      toast.error("An unexpected error occurred during deletion.");
+      await deleteAccount(accountToDelete.id);
+      toast.success("Category deleted successfully.");
+      setAccountToDelete(null);
+    } catch (e: any) {
+      console.error("Error deleting account:", e);
+      toast.error(`Failed to delete category: ${e.message || "Unknown error"}`);
     }
   };
 
@@ -224,7 +202,10 @@ export function AccountManagementTab() {
         onOpenChange={setIsDialogOpen}
         initialAccount={editingAccount}
         accountType={dialogType}
-        onSuccess={handleSuccess}
+        onSuccess={() => {
+          setIsDialogOpen(false);
+          setEditingAccount(null);
+        }}
       />
     </>
   );

@@ -23,6 +23,9 @@ interface AccountsContextType {
   equityAccounts: Account[];
   isLoadingAccounts: boolean;
   refreshAccounts: () => Promise<void>;
+  addAccount: (name: string, type: "Revenue" | "Expense") => Promise<void>;
+  updateAccount: (id: string, name: string) => Promise<void>;
+  deleteAccount: (id: string) => Promise<void>;
 }
 
 const AccountsContext = createContext<AccountsContextType | undefined>(
@@ -65,6 +68,51 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
     }
   }, [session?.user?.id, isLoadingSession]);
 
+  const addAccount = async (name: string, type: "Revenue" | "Expense") => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to add an account.");
+      return;
+    }
+    const newAccount = {
+      user_id: session.user.id,
+      account_name: name,
+      account_type: type,
+      is_default: false,
+    };
+    const { error } = await supabase.from("accounts").insert(newAccount);
+    if (error) throw error;
+    await fetchAccounts();
+  };
+
+  const updateAccount = async (id: string, name: string) => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to update an account.");
+      return;
+    }
+    const { error } = await supabase
+      .from("accounts")
+      .update({ account_name: name })
+      .eq("id", id)
+      .eq("user_id", session.user.id);
+    if (error) throw error;
+    await fetchAccounts();
+  };
+
+  const deleteAccount = async (id: string) => {
+    if (!session?.user?.id) {
+      toast.error("You must be logged in to delete an account.");
+      return;
+    }
+    const { error } = await supabase
+      .from("accounts")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", session.user.id);
+    if (error) throw error;
+    await fetchAccounts();
+  };
+
+
   const categorizedAccounts = useMemo(() => {
     const income = accounts.filter(a => a.account_type === "Revenue");
     const expense = accounts.filter(a => a.account_type === "Expense");
@@ -92,6 +140,9 @@ export function AccountsProvider({ children }: { children: ReactNode }) {
         ...categorizedAccounts,
         isLoadingAccounts,
         refreshAccounts,
+        addAccount,
+        updateAccount,
+        deleteAccount,
       }}
     >
       {children}
