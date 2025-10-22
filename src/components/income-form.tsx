@@ -99,6 +99,7 @@ export function IncomeForm({
               <FormLabel>Category (Revenue Account)</FormLabel>
               <FormControl>
                 <CategorySelectWithAdd
+                  key={isLoadingAccounts ? 'loading-income-category' : 'loaded-income-category'}
                   categories={incomeCategories}
                   value={field.value}
                   onChange={field.onChange}
@@ -119,6 +120,7 @@ export function IncomeForm({
               <FormLabel>Received Into (Asset Account)</FormLabel>
               <FormControl>
                 <AccountSelect
+                  key={isLoadingAccounts ? 'loading-income-asset' : 'loaded-income-asset'}
                   accounts={assetAccounts}
                   value={field.value}
                   onChange={field.onChange}

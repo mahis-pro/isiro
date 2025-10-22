@@ -100,6 +100,7 @@ export function ExpenseForm({
               <FormLabel>Category (Expense Account)</FormLabel>
               <FormControl>
                 <CategorySelectWithAdd
+                  key={isLoadingAccounts ? 'loading-expense-category' : 'loaded-expense-category'}
                   categories={expenseCategories}
                   value={field.value}
                   onChange={field.onChange}
@@ -120,6 +121,7 @@ export function ExpenseForm({
               <FormLabel>Paid From (Asset Account)</FormLabel>
               <FormControl>
                 <AccountSelect
+                  key={isLoadingAccounts ? 'loading-expense-asset' : 'loaded-expense-asset'}
                   accounts={assetAccounts}
                   value={field.value}
                   onChange={field.onChange}
