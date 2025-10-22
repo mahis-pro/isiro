@@ -17,6 +17,7 @@ export type Loan = {
   repayment_frequency?: string | null; // Allow null
   purpose?: string | null; // Allow null
   status: "Active" | "Closed";
+  loan_type?: string | null; // New field
 };
 
 interface LoansContextType {
@@ -81,6 +82,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       repayment_frequency: loanData.repaymentFrequency || null, // Convert empty string to null
       purpose: loanData.purpose || null, // Convert empty string to null
       status: loanData.status,
+      loan_type: loanData.loanType || null, // New field
     };
 
     const { data, error } = await supabase
@@ -114,6 +116,7 @@ export function LoansProvider({ children }: { children: ReactNode }) {
       repayment_frequency: loanData.repaymentFrequency || null, // Convert empty string to null
       purpose: loanData.purpose || null, // Convert empty string to null
       status: loanData.status,
+      loan_type: loanData.loanType || null, // New field
     };
 
     const { data: updatedData, error } = await supabase

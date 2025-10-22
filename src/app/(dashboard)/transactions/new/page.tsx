@@ -40,7 +40,7 @@ function NewTransactionContent() {
 
   const handleAddExpense = async (values: ExpenseFormValues) => {
     try {
-      await addTransaction({ ...values, type: "expense", tax: values.taxDeducted, paymentMethod: values.paymentMethod });
+      await addTransaction({ ...values, type: "expense", tax: values.taxPaid, paymentMethod: values.paymentMethod });
       toast.success("Expense recorded successfully!");
       router.push("/transactions");
     } catch (error) {

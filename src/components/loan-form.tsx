@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCurrencyFormatter } from "@/hooks/use-currency-formatter"; // Import the hook
 
 const repaymentFrequencies = ["Weekly", "Monthly", "Quarterly"];
+const loanTypes = ["Bank Loan", "Microfinance Loan", "Personal Loan", "Other"];
 
 interface LoanFormProps {
   initialValues?: Partial<LoanFormValues>;
@@ -51,6 +52,7 @@ export function LoanForm({
       repaymentFrequency: undefined,
       purpose: "",
       status: "Active",
+      loanType: undefined, // New field
     },
   });
 
@@ -163,6 +165,28 @@ export function LoanForm({
                 <SelectContent>
                   {repaymentFrequencies.map((freq) => (
                     <SelectItem key={freq} value={freq}>{freq}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="loanType" // New field
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Loan Type (Optional)</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select loan type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {loanTypes.map((type) => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

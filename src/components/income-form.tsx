@@ -49,6 +49,7 @@ export function IncomeForm({
       paymentMethod: "",
       customer: "",
       tax: 0,
+      paymentStatus: "received", // Default to received
     },
   });
 
@@ -158,6 +159,27 @@ export function IncomeForm({
             <FormItem className="flex flex-col">
               <FormLabel>Date</FormLabel>
               <DatePicker value={field.value} onChange={field.onChange} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="paymentStatus"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payment Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select payment status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="received">Received</SelectItem>
+                  <SelectItem value="outstanding">Outstanding</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

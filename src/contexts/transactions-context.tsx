@@ -17,12 +17,13 @@ export type Transaction = {
   vendor?: string;
   tax?: number;
   notes?: string;
+  payment_status: "received" | "outstanding" | "paid" | "due"; // New field
 };
 
 interface TransactionsContextType {
   transactions: Transaction[];
-  addTransaction: (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => Promise<void>;
-  updateTransaction: (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => Promise<void>;
+  addTransaction: (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method" | "payment_status"> & { amount: number, date: Date, paymentMethod: string, paymentStatus: "received" | "outstanding" | "paid" | "due" }) => Promise<void>;
+  updateTransaction: (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method" | "payment_status"> & { amount: number, date: Date, paymentMethod: string, paymentStatus: "received" | "outstanding" | "paid" | "due" }) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
   isLoadingTransactions: boolean;
 }
@@ -66,7 +67,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     }
   }, [session?.user?.id, isLoadingSession]);
 
-  const addTransaction = async (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => {
+  const addTransaction = async (transaction: Omit<Transaction, "id" | "amount" | "date" | "payment_method" | "payment_status"> & { amount: number, date: Date, paymentMethod: string, paymentStatus: "received" | "outstanding" | "paid" | "due" }) => {
     if (!session?.user?.id) {
       toast.error("You must be logged in to add a transaction.");
       return;
@@ -84,6 +85,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       tax: transaction.tax === 0 ? null : transaction.tax,
       notes: transaction.notes || null,
       type: transaction.type,
+      payment_status: transaction.paymentStatus, // New field
     };
 
     console.log("Attempting to insert transaction with data:", newTransactionData); // Added debug log
@@ -110,7 +112,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const updateTransaction = async (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method"> & { amount: number, date: Date, paymentMethod: string }) => {
+  const updateTransaction = async (id: string, data: Omit<Transaction, "id" | "amount" | "date" | "payment_method" | "payment_status"> & { amount: number, date: Date, paymentMethod: string, paymentStatus: "received" | "outstanding" | "paid" | "due" }) => {
     if (!session?.user?.id) {
       toast.error("You must be logged in to update a transaction.");
       return;
@@ -127,6 +129,7 @@ export function TransactionsProvider({ children }: { children: ReactNode }) {
       tax: data.tax === 0 ? null : data.tax,
       notes: data.notes || null,
       type: data.type,
+      payment_status: data.paymentStatus, // New field
     };
 
     console.log("Attempting to update transaction with data:", updatedTransactionData); // Added debug log

@@ -25,7 +25,7 @@ export function EditTransactionDialog({ transaction, onOpenChange }: EditTransac
   const handleUpdateIncome = async (values: IncomeFormValues) => {
     if (!transaction) return;
     try {
-      await updateTransaction(transaction.id, { ...values, type: "income", paymentMethod: values.paymentMethod });
+      await updateTransaction(transaction.id, { ...values, type: "income", paymentMethod: values.paymentMethod, paymentStatus: values.paymentStatus });
       toast.success("Transaction updated successfully!");
       onOpenChange(false);
     } catch (error) {
@@ -36,7 +36,7 @@ export function EditTransactionDialog({ transaction, onOpenChange }: EditTransac
   const handleUpdateExpense = async (values: ExpenseFormValues) => {
     if (!transaction) return;
     try {
-      await updateTransaction(transaction.id, { ...values, type: "expense", tax: values.taxDeducted, paymentMethod: values.paymentMethod });
+      await updateTransaction(transaction.id, { ...values, type: "expense", tax: values.taxPaid, paymentMethod: values.paymentMethod, paymentStatus: values.paymentStatus });
       toast.success("Transaction updated successfully!");
       onOpenChange(false);
     } catch (error) {
@@ -44,12 +44,30 @@ export function EditTransactionDialog({ transaction, onOpenChange }: EditTransac
     }
   };
 
-  const initialValues = transaction ? {
-    ...transaction,
+  // Create separate initialValues objects for income and expense forms
+  const incomeInitialValues: Partial<IncomeFormValues> | undefined = transaction?.type === "income" ? {
     amount: Math.abs(transaction.amount),
+    description: transaction.description,
+    category: transaction.category,
+    paymentMethod: transaction.payment_method,
+    customer: transaction.customer,
+    tax: transaction.tax,
     date: new Date(transaction.date),
-    taxDeducted: transaction.tax,
-    paymentMethod: transaction.payment_method, // Map payment_method to paymentMethod
+    paymentStatus: transaction.payment_status as "received" | "outstanding",
+    receipt: undefined, // File inputs are typically not pre-filled
+  } : undefined;
+
+  const expenseInitialValues: Partial<ExpenseFormValues> | undefined = transaction?.type === "expense" ? {
+    amount: Math.abs(transaction.amount),
+    description: transaction.description,
+    category: transaction.category,
+    vendor: transaction.vendor,
+    paymentMethod: transaction.payment_method,
+    taxPaid: transaction.tax, // Mapped from transaction.tax
+    date: new Date(transaction.date),
+    paymentStatus: transaction.payment_status as "paid" | "due",
+    invoice: undefined, // File inputs are typically not pre-filled
+    notes: transaction.notes,
   } : undefined;
 
   return (
@@ -64,14 +82,14 @@ export function EditTransactionDialog({ transaction, onOpenChange }: EditTransac
         <div className="pt-4">
           {transaction?.type === "income" && (
             <IncomeForm
-              initialValues={initialValues}
+              initialValues={incomeInitialValues}
               onSubmit={handleUpdateIncome}
               submitButtonText="Save Changes"
             />
           )}
           {transaction?.type === "expense" && (
             <ExpenseForm
-              initialValues={initialValues}
+              initialValues={expenseInitialValues}
               onSubmit={handleUpdateExpense}
               submitButtonText="Save Changes"
             />

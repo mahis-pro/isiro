@@ -48,8 +48,9 @@ export function ExpenseForm({
       category: "",
       paymentMethod: "",
       vendor: "",
-      taxDeducted: 0,
+      taxPaid: 0, // Renamed
       notes: "",
+      paymentStatus: "paid", // Default to paid
     },
   });
 
@@ -141,10 +142,10 @@ export function ExpenseForm({
         />
         <FormField
           control={form.control}
-          name="taxDeducted"
+          name="taxPaid" // Renamed
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tax Deducted (Optional)</FormLabel>
+              <FormLabel>Tax Paid (Optional)</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="e.g., 5" {...field} />
               </FormControl>
@@ -159,6 +160,27 @@ export function ExpenseForm({
             <FormItem className="flex flex-col">
               <FormLabel>Date</FormLabel>
               <DatePicker value={field.value} onChange={field.onChange} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="paymentStatus"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payment Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select payment status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="due">Due</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

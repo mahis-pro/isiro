@@ -42,6 +42,7 @@ export function EditLoanDialog({ loan, onOpenChange }: EditLoanDialogProps) {
     repaymentFrequency: loan.repayment_frequency ?? undefined, // Convert null to undefined
     purpose: loan.purpose ?? undefined, // Convert null to undefined
     status: loan.status,
+    loanType: loan.loan_type ?? undefined, // New field
   } : undefined;
 
   return (

@@ -19,6 +19,7 @@ export const incomeSchema = z.object({
   date: z.date({
     required_error: "A date is required.",
   }),
+  paymentStatus: z.enum(["received", "outstanding"], { required_error: "Payment status is required." }), // New field
   receipt: fileSchema,
 });
 
@@ -37,10 +38,11 @@ export const expenseSchema = z.object({
   category: z.string({ required_error: "Please select a category." }),
   vendor: z.string().optional(),
   paymentMethod: z.string({ required_error: "Please select a payment method." }),
-  taxDeducted: z.coerce.number().optional(),
+  taxPaid: z.coerce.number().optional(), // Renamed from taxDeducted
   date: z.date({
     required_error: "A date is required.",
   }),
+  paymentStatus: z.enum(["paid", "due"], { required_error: "Payment status is required." }), // New field
   invoice: fileSchema,
   notes: z.string().optional(),
 });
@@ -62,6 +64,7 @@ export const loanSchema = z.object({
   repaymentFrequency: z.string().optional(),
   purpose: z.string().optional(),
   status: z.enum(["Active", "Closed"]),
+  loanType: z.string().optional(), // New field
   agreement: fileSchema,
 });
 
