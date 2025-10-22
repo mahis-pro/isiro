@@ -1,14 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,8 +8,9 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { AuthFormContainer } from "@/components/auth/auth-form-container";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -40,49 +33,39 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="w-full max-w-sm space-y-6">
-      <div className="text-center lg:hidden">
-        <Link href="/">
-          <Image
-            src="/logo.png"
-            alt="ÌṢIRÒ Logo"
-            width={120}
-            height={48}
-            className="mx-auto"
+    <>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input-auth-bg rounded-lg h-12"
           />
+        </div>
+        <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={isSubmitting}>
+          {isSubmitting ? "Sending..." : "Send Reset Link"}
+        </Button>
+      </form>
+      <div className="mt-4 text-center text-sm">
+        <Link href="/auth/sign-in" className="underline text-muted-foreground hover:text-foreground">
+          Back to Sign In
         </Link>
       </div>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-poppins">Forgot Password?</CardTitle>
-          <CardDescription>
-            Enter your email to receive a password reset link.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Sending..." : "Send Reset Link"}
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            <Link href="/auth/sign-in" className="underline">
-              Back to Sign In
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    </>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <AuthFormContainer
+      title="Forgot Password?"
+      description="Enter your email to receive a password reset link."
+      form={<ForgotPasswordForm />}
+    />
   );
 }

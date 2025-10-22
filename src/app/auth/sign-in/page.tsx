@@ -1,24 +1,20 @@
 "use client";
 
 import { SignInForm } from "@/components/auth/sign-in-form";
-import { AuthPageContainer } from "@/components/auth/auth-page-container";
+import { AuthFormContainer } from "@/components/auth/auth-form-container";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react"; // Import Suspense
+import { Suspense } from "react";
 import { toast } from "sonner";
 
 function SignInContent() {
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
 
-  // Removed the useEffect that was prematurely showing "Email confirmed!" toast.
-  // The initial sign-up toast already instructs the user to check their email.
-
   return (
-    <AuthPageContainer
+    <AuthFormContainer
       title="Login"
-      description="Welcome back! Access your ÌṢIRÒ account to manage your business finances."
+      description="Welcome back! Access your ÌṢIRÒ account."
       form={<SignInForm />}
-      rightPanelImageSrc="/auth-mockup.png"
     />
   );
 }

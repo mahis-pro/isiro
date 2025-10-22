@@ -20,6 +20,7 @@ import { PasswordInput } from "./password-input";
 import Link from "next/link";
 import { SocialAuthButtons } from "./social-auth-buttons";
 import { User, Lock } from "lucide-react"; // Import icons
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 export function SignInForm() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export function SignInForm() {
               <FormControl>
                 <div className="relative flex items-center">
                   <User className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Username" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
+                  <Input placeholder="Email Address" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
                 </div>
               </FormControl>
               <FormMessage />
@@ -80,25 +81,32 @@ export function SignInForm() {
             </FormItem>
           )}
         />
+        <div className="text-right text-sm">
+          <Link href="/auth/forgot-password" className="underline text-muted-foreground hover:text-foreground">
+            Forgot your password?
+          </Link>
+        </div>
         <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={form.formState.isSubmitting}>
           Login Now
         </Button>
       </form>
-      <div className="flex items-center my-6 justify-center">
-        <span className="mx-2 text-sm text-muted-foreground">Login with Others</span>
+      <div className="relative my-6">
+        <Separator />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="bg-card px-2 text-sm text-muted-foreground">
+            OR
+          </span>
+        </div>
       </div>
       <SocialAuthButtons />
-      <div className="text-center text-sm mt-4 space-y-2">
-          <Link href="/auth/forgot-password" className="underline text-muted-foreground hover:text-foreground">
-            Forgot your password?
+      <div className="text-center text-sm mt-4">
+        <p className="text-muted-foreground">
+          Don't have an account?{" "}
+          <Link href="/auth/sign-up" className="underline text-primary hover:text-primary/80 font-medium">
+            Create New Account
           </Link>
-          <p className="text-muted-foreground">
-            Don't have an account?{" "}
-            <Link href="/auth/sign-up" className="underline text-primary hover:text-primary/80 font-medium">
-              Create New Account
-            </Link>
-          </p>
-        </div>
+        </p>
+      </div>
     </Form>
   );
 }

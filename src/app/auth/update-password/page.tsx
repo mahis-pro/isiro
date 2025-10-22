@@ -1,14 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -16,8 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/auth/password-input";
+import { AuthFormContainer } from "@/components/auth/auth-form-container";
 
-export default function UpdatePasswordPage() {
+function UpdatePasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,53 +44,42 @@ export default function UpdatePasswordPage() {
   };
 
   return (
-    <div className="w-full max-w-sm space-y-6">
-      <div className="text-center lg:hidden">
-        <Link href="/">
-          <Image
-            src="/logo.png"
-            alt="ÌṢIRÒ Logo"
-            width={120}
-            height={48}
-            className="mx-auto"
-          />
-        </Link>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-2">
+        <Label htmlFor="password">New Password</Label>
+        <PasswordInput
+          id="password"
+          placeholder="••••••••"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="input-auth-bg rounded-lg h-12"
+        />
       </div>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-poppins">Update Password</CardTitle>
-          <CardDescription>
-            Enter your new password.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="password">New Password</Label>
-              <PasswordInput
-                id="password"
-                placeholder="••••••••"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm New Password</Label>
-              <PasswordInput
-                id="confirm-password"
-                placeholder="••••••••"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update Password"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      <div className="grid gap-2">
+        <Label htmlFor="confirm-password">Confirm New Password</Label>
+        <PasswordInput
+          id="confirm-password"
+          placeholder="••••••••"
+          required
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="input-auth-bg rounded-lg h-12"
+        />
+      </div>
+      <Button type="submit" className="w-full btn-gradient-primary h-12 text-lg" disabled={isSubmitting}>
+        {isSubmitting ? "Updating..." : "Update Password"}
+      </Button>
+    </form>
+  );
+}
+
+export default function UpdatePasswordPage() {
+  return (
+    <AuthFormContainer
+      title="Update Password"
+      description="Enter your new password."
+      form={<UpdatePasswordForm />}
+    />
   );
 }

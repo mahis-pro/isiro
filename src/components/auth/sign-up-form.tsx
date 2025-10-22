@@ -20,6 +20,7 @@ import { PasswordInput } from "./password-input";
 import { SocialAuthButtons } from "./social-auth-buttons";
 import { User, Lock } from "lucide-react"; // Import icons
 import Link from "next/link"; // Import Link
+import { Separator } from "@/components/ui/separator"; // Import Separator
 
 export function SignUpForm() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export function SignUpForm() {
       toast.error(error.message);
     } else {
       toast.success("Success! Please check your email to confirm your account.");
-      router.push("/auth/sign-in?message=check_email");
+      router.push("/auth/check-email");
     }
   }
 
@@ -58,7 +59,7 @@ export function SignUpForm() {
               <FormControl>
                 <div className="relative flex items-center">
                   <User className="absolute left-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Email" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
+                  <Input placeholder="Email Address" {...field} className="pl-10 input-auth-bg rounded-lg h-12" />
                 </div>
               </FormControl>
               <FormMessage />
@@ -101,8 +102,13 @@ export function SignUpForm() {
           Create Account
         </Button>
       </form>
-      <div className="flex items-center my-6 justify-center">
-        <span className="mx-2 text-sm text-muted-foreground">Sign Up with Others</span>
+      <div className="relative my-6">
+        <Separator />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="bg-card px-2 text-sm text-muted-foreground">
+            OR
+          </span>
+        </div>
       </div>
       <SocialAuthButtons />
       <div className="text-center text-sm mt-4">
